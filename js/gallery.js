@@ -3,9 +3,21 @@
  * Manages the list of slides and navigation logic.
  */
 class Gallery {
-    constructor(config) {
+    constructor(config, assetLoader) {
+        this.config = config;
         this.slides = this._flattenConfig(config);
         this.currentIndex = 0;
+        this.assetLoader = assetLoader;
+    }
+
+    /**
+     * Initializes the gallery.
+     * Preloads the first group before resolving.
+     */
+    async init() {
+        if (this.config.groups.length > 0) {
+            await this.assetLoader.preloadGroup(this.config.groups[0]);
+        }
     }
 
     /**
@@ -24,7 +36,8 @@ class Gallery {
                     groupTotal: group.images.length,
                     imageIndex: imageIndex + 1, // 1-based for display
                     audioSrc: group.audioSrc,
-                    groupId: group.id
+                    groupId: group.id,
+                    groupObj: group // Store reference to full group object for preloading
                 });
             });
         });
@@ -45,6 +58,7 @@ class Gallery {
     next() {
         if (this.hasNext()) {
             this.currentIndex++;
+            this._preloadNextGroup();
             return true;
         }
         return false;
@@ -57,6 +71,9 @@ class Gallery {
     prev() {
         if (this.hasPrevious()) {
             this.currentIndex--;
+            // Optional: Preload previous group? 
+            // Usually we move forward, but we could preload prev group too if needed.
+            // For now, let's stick to forward preloading as per requirements.
             return true;
         }
         return false;
@@ -83,5 +100,18 @@ class Gallery {
      */
     isNewGroup(prevSlide, nextSlide) {
         return prevSlide.groupId !== nextSlide.groupId;
+    }
+
+    /**
+     * Preloads the next group's assets in the background.
+     */
+    _preloadNextGroup() {
+        const currentSlide = this.getCurrentSlide();
+        const nextGroupIndex = this.config.groups.findIndex(g => g.id === currentSlide.groupId) + 1;
+
+        if (nextGroupIndex < this.config.groups.length) {
+            const nextGroup = this.config.groups[nextGroupIndex];
+            this.assetLoader.preloadGroup(nextGroup);
+        }
     }
 }
