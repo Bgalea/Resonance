@@ -11,6 +11,19 @@ const audioPlayer = new AudioPlayer();
 
 // DOM Elements
 const imageEl = document.getElementById('gallery-image');
+
+// SECURITY: Basic Content Protection
+// Prevent right-click context menu on the image
+imageEl.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    return false;
+});
+
+// Prevent dragging the image
+imageEl.addEventListener('dragstart', (e) => {
+    e.preventDefault();
+    return false;
+});
 const captionEl = document.getElementById('gallery-caption');
 const infoEl = document.getElementById('gallery-info');
 const prevBtn = document.getElementById('prev-btn');
@@ -114,7 +127,8 @@ nextBtn.addEventListener('click', () => {
 
     } catch (error) {
         console.error("Failed to initialize gallery:", error);
-        loadingOverlay.innerHTML = `<p>Error loading gallery. Please refresh.</p>`;
+        // SECURITY: Use textContent to prevent XSS
+        loadingOverlay.textContent = "Error loading gallery. Please refresh.";
     }
 })();
 
