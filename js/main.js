@@ -63,8 +63,9 @@ function updateAudioUI() {
 
     // Update Slider
     // We keep the slider at the volume level even if muted
-    volumeSlider.value = audioPlayer.volume * 100;
-    volumeSlider.setAttribute('aria-valuenow', audioPlayer.volume * 100);
+    // Slider is 0-1, audioPlayer.volume is 0-1
+    volumeSlider.value = audioPlayer.volume;
+    volumeSlider.setAttribute('aria-valuenow', audioPlayer.volume);
 }
 
 muteBtn.addEventListener('click', () => {
@@ -73,8 +74,9 @@ muteBtn.addEventListener('click', () => {
 });
 
 volumeSlider.addEventListener('input', (e) => {
-    const val = parseInt(e.target.value, 10);
-    const newVolume = val / 100;
+    const val = parseFloat(e.target.value);
+    // Clamp just in case
+    const newVolume = Math.max(0, Math.min(1, val));
     audioPlayer.setVolume(newVolume);
     updateAudioUI();
 });
