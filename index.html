@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 
@@ -69,3 +70,693 @@
 </body>
 
 </html>
+=======
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+	<head>
+
+		<title>The Sounds of Cuba! Baptiste Galea & Tania Koller</title>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		
+		<link rel="stylesheet" href="css/supersized.shuttersound.css" type="text/css" media="all" />
+		<link rel="stylesheet" href="css/jquery.superbox.css" type="text/css" media="all" />
+		
+		<script src="http://maps.google.com/maps/api/js?sensor=true" type="text/javascript"></script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+		<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.min.js"></script>
+		<script src="js/ui/min/jquery.ui.map.full.min.js" type="text/javascript"></script>
+		<script type="text/javascript" src="js/jquery.easing.min.js"></script>
+		
+		<!--superbox-->
+		<script type="text/javascript" src="js/jquery.superbox-min.js"></script>
+		
+		<!--gallery-->
+		<script type="text/javascript" src="js/supersized.3.2.7.js"></script>
+		
+		<!--sharre (facebook, twitter...-->
+		<script type="text/javascript" src="js/jquery.sharrre-1.3.4.min.js"></script>
+		
+		<!--sound-->
+		<script type="text/javascript" src="js/buzz.js"></script>
+		
+		<!--web page specific-->
+		<script type="text/javascript" src="theme/supersized.shuttersound.js"></script>
+		<script type="text/javascript">buzz.defaults.formats = ['aac','mp3','ogg'];</script>
+		<script type="text/javascript" src="js/gallery.js"></script>
+	</head>
+
+<body>
+	<div id="hidden">
+		<img src="img/progress.gif" alt="progress">
+		<img src="img/theme/playback_play.png" alt="play">
+	</div>
+	
+	<div id="infobox">
+		<a href="page/info.html" rel="superbox[ajax][page/info-ajax.html]">
+			<img class="infobox_social" src="img/theme/font_italic.png" width="16" title="Info"/>
+		</a>
+		<a href="page/location.html" rel="superbox[ajax][page/location.html]">
+			<img class="infobox_social" src="img/theme/compass.png" width="16" title="Info"/>
+		</a>
+		<div id="shareme" data-url="http://www.whitehills.fr/" data-text="All the sounds of Cuba, this is awesome!">
+			<a href="#" class="facebook">	<img src="img/theme/facebook.png" alt="share it!" width="16"/>					</a>
+			<a href="#" class="twitter">	<img class="twitter" src="img/theme/twitter_2.png" alt="share it!" width="16"/>	</a>
+			<a id="total" href="#" alt="Number of shares!" >{total}</a>
+		</div>
+	</div>
+	
+	<ul id="demo-block">
+		<li><h2>Cuba</h2></li>
+		<!-- <li>
+			
+			Photographers: </br><a href="page/tania.html" rel="superbox[ajax][page/tania-ajax.html]">Tania Koller</a>,  </br>
+			<a href="page/baptiste.html" rel="superbox[ajax][page/baptiste-ajax.html]">Baptiste Galea</a>
+			<a>Tania Koller</a>, </br> <a>Baptiste Galea</a>
+			<p>© 2012 by Baptiste Galea </br>
+			and Tania Koller. All rights reserved. </p>
+		</li> -->
+		<li id="descriptionphoto">&#129;</li>
+	</ul>	
+	
+	<!--Thumbnail Navigation-->
+	<div id="prevthumb"></div>
+	<div id="nextthumb"></div>
+	
+	<!--Arrow Navigation-->
+	<a id="prevslide" class="load-item"></a>
+	<a id="nextslide" class="load-item"></a>
+	
+	<div id="thumb-tray" class="load-item">
+		<div id="thumb-back"></div>
+		<div id="thumb-forward"></div>
+	</div>
+	
+	<!--Control Bar-->
+	<div id="controls-wrapper" class="load-item">
+		<div id="controls">
+			
+			<a id="play-button"><img id="pauseplay" src="img/theme/playback_pause.png" width="16"/></a>
+			
+			<div id="volume" class="all"><a href="#"><img id="volume_button" src="img/theme/sound_high.png" width="16"/></a></div>
+		
+			<!--Slide counter-->
+			<div id="slidecounter">
+				<span class="slidenumber"></span> / <span class="totalslides"></span>
+			</div>
+			
+			<!--Slide captions displayed here-->
+			<div id="slidecaption"></div>
+			
+			<!--Thumb Tray button-->
+			<a id="tray-button"><img id="tray-arrow" src="img/theme/trail_down.png" width="16"/></a>
+			
+			<!--Navigation
+			<ul id="slide-list"></ul>-->
+			
+		</div>
+	</div>
+	
+	<div id="content-all" class="">
+			<!-- La havane -->
+			<ul id="soundbloc_havane" class="blocsound">
+				<li>
+					<span class="span_sound">mysounds/01_ambianceruepuismusique.mp3</span>
+				</li>
+				<li><img class="image" src="pictures/000007490024.jpg" alt="La Havane">
+    				<span class="title">La Havane</span>
+    				<span class="description">Bienvenue à La havane, capitale de Cuba!</span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_2916.jpg" alt="La Havane">
+    				<span class="title">La Havane</span>
+    				<span class="description">Bienvenue à La havane, capitale de Cuba!</span>
+    			</li>
+    			<!--  <li><img class="image" src="pictures/DSC_2862.jpg" alt="La Havane">
+    				<span class="title">La Havane</span>
+    				<span class="description">Vue des toits, on appercoit le capitole au loin.</span>
+    			</li> -->
+    			<li><img class="image" src="pictures/DSC_2931.jpg" alt="La Havane">
+    				<span class="title">La Havane</span>
+    				<span class="description">Une église du Havana Vieja.</span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_2932.jpg" alt="La Havane">
+    				<span class="title">La Havane</span>
+    				<span class="description">Sur la place de cette église, un bougainvillier</span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_2934.jpg" alt="La Havane">
+    				<span class="title">La Havane</span>
+    				<span class="description"></span>
+    			</li>
+    			<!-- <li><img class="image" src="pictures/DSC_3019.jpg" alt="La Havane">
+    				<span class="title">La Havane</span>
+    				<span class="description"></span>
+    			</li> -->
+    			<li><img class="image" src="pictures/000007490007.jpg" alt="La Havane">
+    				<span class="title">La Havane</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/000007490023.jpg" alt="La Havane">
+    				<span class="title">La Havane</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/000007490025.jpg" alt="La Havane">
+    				<span class="title">La Havane</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/000007490027.jpg" alt="La Havane">
+    				<span class="title">La Havane</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_4276.jpg" alt="La Havane">
+    				<span class="title">La Havane</span>
+    				<span class="description"></span>
+    			</li>
+    			<!-- <li><img class="image" src="pictures/DSC_4288.jpg" alt="La Havane">
+    				<span class="title">La Havane</span>
+    				<span class="description"></span>
+    			</li> -->
+    			<li><img class="image" src="pictures/DSC_4330.jpg" alt="La Havane">
+    				<span class="title">La Havane</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_4358.jpg" alt="La Havane">
+    				<span class="title">La Havane</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_4371.jpg" alt="La Havane">
+    				<span class="title">La Havane</span>
+    				<span class="description"></span>
+    			</li>
+    		</ul>
+    		
+    		<!-- les Voitures -->
+    		<ul id="soundbloc_voiture" class="blocsound">
+				<li>
+					<span class="span_sound">mysounds/08_voitures.mp3</span>
+				</li>	
+    			<li><img class="image" src="pictures/DSC_2941.jpg" alt="La Havane">
+    				<span class="title">La Havane</span>
+    				<span class="description">Le temps s'est arreté en 1959... 
+    				Voici donc les belles americaines! Car Cuba était un surnomme le bordel de l'Amérique avant le push des castristes. 
+    				C'etait un Los Angeles des années 50! On y retrouve ces belles et charmantes Américaines ... </span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_2947.jpg" alt="La Havane">
+    				<span class="title">La Havane</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_2949.jpg" alt="La Havane">
+    				<span class="title">La Havane</span>
+    				<span class="description"></span>
+    			</li>
+    			<!-- <li><img class="image" src="pictures/DSC_2951.jpg" alt="La Havane">
+    				<span class="title">La Havane</span>
+    				<span class="description"></span>
+    			</li> -->
+    			<li><img class="image" src="pictures/DSC_2986.jpg" alt="La Havane">
+    				<span class="title">La Havane</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_2989.jpg" alt="La Havane">
+    				<span class="title">La Havane</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_2990.jpg" alt="La Havane">
+    				<span class="title">La Havane</span>
+    				<span class="description"></span>
+    			</li>
+    		</ul>	
+    		
+    		<!-- les Ruelles -->
+    		<ul id="soundbloc_Ruelles" class="blocsound">
+				<li>
+					<span class="span_sound">mysounds/2_ambiancederue.mp3</span>
+				</li>	
+    			<li><img class="image" src="pictures/DSC_2956.jpg" alt="La Havane">
+    				<span class="title">La Havane</span>
+    				<span class="description">La vielle Havane</span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_2959.jpg" alt="La Havane">
+    				<span class="title">La Havane</span>
+    				<span class="description">La vielle Havane</span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_2991.jpg" alt="La Havane">
+    				<span class="title">La Havane</span>
+    				<span class="description">El Paseo Martin, L'entrée dans du Centro Havana </span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_2993.jpg" alt="La Havane">
+    				<span class="title">La Havane</span>
+    				<span class="description">Centro Havana</span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_2966.jpg" alt="La Havane">
+    				<span class="title">La Havane</span>
+    				<span class="description">Une pharmacie... Ce n'est pas une legende, c'est difficile de se trouver des medicaments sous le communisme!</span>
+    			</li>
+    		</ul>
+    		
+    		<!-- Le Molacon -->	
+    		<ul id="soundbloc_Molacon" class="blocsound">
+				<li>
+					<span class="span_sound">mysounds/09_ambianceville.mp3</span>
+				</li>
+    			<li><img class="image" src="pictures/DSC_2999.jpg" alt="La Havane">
+    				<span class="title">La Havane</span>
+    				<span class="description">El Malecón, la promenade romantique de la havane. C'est un peu la croisette de la Havane.
+    				On est loin des fronts de mer occidentaux ou les immeubles du front de mer sont pas vraiment les plus luxeux!</span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3010.jpg" alt="La Havane">
+    				<span class="title">La Havane</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3014.jpg" alt="La Havane">
+    				<span class="title">La Havane</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3016.jpg" alt="La Havane">
+    				<span class="title">La Havane</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3017.jpg" alt="La Havane">
+    				<span class="title">La Havane</span>
+    				<span class="description">Encore une!</span>
+    			</li>
+    		</ul>
+    		
+    		<!-- Jungle -->
+    		<ul id="soundbloc_jungle" class="blocsound">
+				<li>
+					<span class="span_sound">mysounds/3_jungle.mp3</span>
+				</li>
+				<li><img class="image" src="pictures/DSC_3046.jpg" alt="Vinales">
+    				<span class="title">Soroa</span>
+    				<span class="description">Voici la jungle Cubaine. Et oui ce sont des cigales que vous entendez!</span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3055.jpg" alt="Vinales">
+    				<span class="title">Soroa</span>
+    				<span class="description">... avec de grosses cigales!</span>
+    			</li>
+    		</ul>
+    		
+    		<!-- Cascade -->
+    		<ul id="soundbloc_cascade" class="blocsound">
+				<li>
+					<span class="span_sound">mysounds/6_cascade.mp3</span>
+				</li>
+    			<li><img class="image" src="pictures/DSC_3074.jpg" alt="Vinales">
+    				<span class="title">Soroa</span>
+    				<span class="description">Pas mal pour une baignade, alors qu'il fait 30! A cuba, il fait très humide, chaque pas vous fait transpirer...</span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3080.jpg" alt="Vinales">
+    				<span class="title">Soroa</span>
+    				<span class="description">Pas mal pour une baignade, alors qu'il fait 30! A cuba, il fait très humide, chaque pas vous fait transpirer...</span>
+    			</li>
+    		</ul> 		
+    		
+    		<!-- Vinales -->
+    		<ul id="soundbloc_Vinales" class="blocsound">
+    			<li>
+					<span class="span_sound">mysounds/08_fermev2.mp3</span>
+				</li>
+    			<li><img class="image" src="pictures/DSC_3126.jpg" alt="Vinales">
+    				<span class="title">Vinales</span>
+    				<span class="description">La valle de Viñales. Voici les Mogotes, des gros pains de sucres dans des champs de Tabac.</span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3132.jpg" alt="Vinales">
+    				<span class="title">Vinales</span>
+    				<span class="description"></span>
+    			</li>
+    			<!-- <li><img class="image" src="pictures/DSC_3141.jpg" alt="Vinales">
+    				<span class="title">Vinales</span>
+    				<span class="description"></span>
+    			</li> -->
+    			<li><img class="image" src="pictures/DSC_3182.jpg" alt="Vinales">
+    				<span class="title">Vinales</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3210.jpg" alt="Vinales">
+    				<span class="title">Vinales</span>
+    				<span class="description">Faut pas déconner...</span>
+    			</li>
+    			<li><img class="image" src="pictures/000007490030.jpg" alt="Vinales">
+    				<span class="title">Vinales</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/000007490032.jpg" alt="Vinales">
+    				<span class="title">Vinales</span>
+    				<span class="description"></span>
+    			</li>	
+    		</ul> 
+    		
+    		<!-- Maria La Gorda -->
+    		<ul id="soundbloc_MariaLaGorda" class="blocsound">
+				<li>
+					<span class="span_sound">mysounds/4_mer.mp3</span>
+				</li>
+    			<li><img class="image" src="pictures/DSC_3286.jpg" alt="Maria La Gorda">
+    				<span class="title">Maria La Gorda</span
+    				><span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3294.jpg" alt="Maria La Gorda">
+    				<span class="title">Maria La Gorda</span
+    				><span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3312.jpg" alt="Maria La Gorda">
+    				<span class="title">Maria La Gorda</span
+    				><span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3346.jpg" alt="Maria La Gorda">
+    				<span class="title">Maria La Gorda</span
+    				><span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3361.jpg" alt="Maria La Gorda">
+    				<span class="title">Maria La Gorda</span>
+    				<span class="description">Maria La Gorda</span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3363.jpg" alt="Maria La Gorda">
+    				<span class="title">Maria La Gorda</span>
+    				<span class="description">Maria La Gorda</span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3389.jpg" alt="Maria La Gorda">
+    				<span class="title">Maria La Gorda</span>
+    				<span class="description">Maria La Gorda</span>
+    			</li>
+    			<!-- 
+    			<li><img class="image" src="pictures/000007510003.jpg" alt="Maria La Gorda">
+    				<span class="title">Maria La Gorda</span>
+    				<span class="description">Maria La Gorda</span>
+    			</li> 
+    			<li><img class="image" src="pictures/000007510018.jpg" alt="Maria La Gorda">
+    				<span class="title">Maria La Gorda</span>
+    				<span class="description">Maria La Gorda</span>
+    			</li>
+    			-->
+    			<li><img class="image" src="pictures/000007510005.jpg" alt="Maria La Gorda">
+    				<span class="title">Maria La Gorda</span>
+    				<span class="description">Maria La Gorda</span>
+    			</li>
+    			
+    		</ul>		
+    		
+    		<!-- Pinar del Río -->
+    		<ul id="soundbloc_Pinar" class="blocsound">
+				<li>
+					<span class="span_sound">mysounds/5_ambiancederuepinardelrio.mp3</span>
+				</li>	
+    			<li><img class="image" src="pictures/DSC_3419.jpg" alt="Pinar del rio">
+    				<span class="title">Pinar del Río</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3430.jpg" alt="Pinar del rio">
+    				<span class="title">Pinar del Río</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3431.jpg" alt="Pinar del rio">
+    				<span class="title">Pinar del Río</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3443.jpg" alt="Pinar del rio">
+    				<span class="title">Pinar del Río</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3457.jpg" alt="Pinar del rio">
+    				<span class="title">Pinar del Río</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3458.jpg" alt="Pinar del rio">
+    				<span class="title">Pinar del Río</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3466.jpg" alt="Pinar del rio">
+    				<span class="title">Pinar del Río</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3484.jpg" alt="Pinar del rio">
+    				<span class="title">Pinar del Río</span>
+    				<span class="description"></span>
+    			</li>
+    		</ul>
+    		
+    		<!-- Sur la route -->
+    		<ul id="soundbloc_SurLaRoute" class="blocsound">
+				<li>
+					<span class="span_sound">mysounds/10_trajetentucktuck.mp3</span>
+				</li>
+				<!-- 
+				<li><img class="image" src="pictures/DSC_3493.jpg" alt="Sur la route">
+    				<span class="title">Sur la route</span>
+    				<span class="description"></span>
+    			</li>
+    			-->
+    			<li><img class="image" src="pictures/DSC_3493.jpg" alt="Sur la route">
+    				<span class="title">Sur la route</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3535.jpg" alt="Sur la route">
+    				<span class="title">Sur la route</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3537.jpg" alt="Sur la route">
+    				<span class="title">Sur la route</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3539.jpg" alt="Sur la route">
+    				<span class="title">Sur la route</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3550.jpg" alt="Sur la route">
+    				<span class="title">Sur la route</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3576.jpg" alt="Sur la route">
+    				<span class="title">Sur la route</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/000007510033.jpg" alt="Playa Larga">
+    				<span class="title">Playa Larga</span>
+    				<span class="description"></span>
+    			</li>
+    		</ul>
+    		
+    		<!-- Trinidad -->
+    		<ul id="soundbloc_Trinidad" class="blocsound">
+				<li>
+					<span class="span_sound">mysounds/11_trinidad.mp3</span>
+				</li>
+				
+    			<li><img class="image" src="pictures/DSC_3623.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3628.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3633.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			<!-- <li><img class="image" src="pictures/DSC_3647.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li> -->
+    			<li><img class="image" src="pictures/DSC_3653.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3676.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3726.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3730.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3741.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description">Les 5 sont 5 prisonniers Cubain détenus aux USA.</span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3783.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description">Les toits de cette ville magique.</span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3817.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description">Les toits de cette ville magique.</span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3834.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3837.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3839.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_4004.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_4020.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_4082.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_4092.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+
+    			<li><img class="image" src="pictures/000007500011.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/000007500016.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/000007500026.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			
+    			<!--
+    			<li><img class="image" src="pictures/DSC_3620.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3702.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3727.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3955.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3999.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_4002.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			
+    			<li><img class="image" src="pictures/DSC_4014.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			
+    			<li><img class="image" src="pictures/000007500001.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/000007500004.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/000007500030.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			 -->
+    		</ul>
+    		
+    		<!-- Les Gens de Trinidad -->
+    		<ul id="soundbloc_LesGensdeTrinidad" class="blocsound">
+				<li>
+					<span class="span_sound">mysounds/12_trinidadgens.mp3</span>
+				</li>	
+    			<li><img class="image" src="pictures/DSC_4065.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_4074.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_4075.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_4078.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_4079.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			
+    			<li><img class="image" src="pictures/DSC_4081.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_4121.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_4102.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3612.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			
+    			<li><img class="image" src="pictures/000007500015.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_4012.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li> 
+    			
+    			<li><img class="image" src="pictures/DSC_3927.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_3929.jpg" alt="Trinidad">
+    				<span class="title">Trinidad</span>
+    				<span class="description"></span>
+    			</li>
+			</ul>
+			
+			<!-- Varadero -->
+    		<ul id="soundbloc_Varadero" class="blocsound">
+				<li>
+					<span class="span_sound">mysounds/4_mer.mp3</span>
+				</li>
+    			<li><img class="image" src="pictures/DSC_4178.jpg" alt="">
+    				<span class="title">Varadero</span>
+    				<span class="description">La mer</span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_4192.jpg" alt="La mer">
+    				<span class="title">Varadero</span>
+    				<span class="description">La mer</span>
+    			</li>
+    			<li><img class="image" src="pictures/DSC_4221.jpg" alt="La mer">
+    				<span class="title">Varadero</span>
+    				<span class="description">La mer</span>
+    			</li>
+    		</ul>
+	</div>
+
+</body>
+</html>
+>>>>>>> 3e8e4bac61fb5d9cb3d7d4ec3d8085691a3b03c6
