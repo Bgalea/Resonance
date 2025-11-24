@@ -4,46 +4,6 @@ This document outlines planned features for the Modern Audio Gallery. These item
 
 ------------------------------------------------
 
-## FEATURE 1 – Touch & Gesture Navigation (Mobile)
-
-**Goal:** Make navigation fluid and natural on touch devices.
-
-**User Story:**
-As a mobile user, I want to swipe to change pictures so that the experience feels like a native app.
-
-**Acceptance Criteria:**
-- [ ] On a mobile/touch device, swiping left goes to the next picture.
-- [ ] On a mobile/touch device, swiping right goes to the previous picture.
-- [ ] Tap to toggle UI controls (show/hide nav & audio controls).
-- [ ] (Optional) Long press to pause/resume audio.
-- [ ] Gesture navigation coexists correctly with button navigation.
-- [ ] Gestures do not interfere with scrolling the page.
-- [ ] Works at least on modern mobile Chrome, Safari, Firefox.
-
-**Priority:** HIGH
-**Dependencies:** Existing navigation logic, event system.
-
-------------------------------------------------
-
-## FEATURE 4 – Fullscreen Mode
-
-**Goal:** Provide an immersive viewing experience.
-
-**User Story:**
-As a user, I want to view the gallery in fullscreen mode to minimize distractions.
-
-**Acceptance Criteria:**
-- [ ] A fullscreen toggle button (e.g., icon 🔳) is available.
-- [ ] Click/tap to enter fullscreen, second click to exit.
-- [ ] Auto-hide controls after a short delay in fullscreen (reappear on interaction).
-- [ ] On supported browsers, clicking the fullscreen button enters fullscreen with the image and core controls.
-- [ ] Exiting fullscreen restores original layout.
-- [ ] If fullscreen API is not available, button is hidden or shows a graceful message.
-- [ ] Does not break audio or navigation.
-
-**Priority:** HIGH
-**Dependencies:** Browser Fullscreen API; compatibility mode logic.
-
 ------------------------------------------------
 
 ## FEATURE 6 – Smart Lazy Loading for Large Galleries

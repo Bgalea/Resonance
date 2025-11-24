@@ -170,3 +170,18 @@ if (window.initTouchControls) {
         }
     });
 }
+
+// Initialize Fullscreen Mode
+if (window.initFullscreen) {
+    initFullscreen({
+        rootEl: document.documentElement,
+        controlsEl: document.querySelector('.controls-wrapper'),
+        fullscreenButtonEl: document.getElementById('fullscreen-btn'),
+        onEnter: () => {
+            document.body.classList.add('fullscreen');
+        },
+        onExit: () => {
+            document.body.classList.remove('fullscreen');
+        }
+    });
+}
