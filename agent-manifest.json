@@ -3,50 +3,62 @@
     {
       "id": "test-agent",
       "name": "Test Agent",
-      "description": "Performs automated validation and acceptance criteria checking.",
+      "description": "QA validation agent.",
       "entrypoint": "agents/test-agent.md"
     },
     {
       "id": "security-agent",
       "name": "Security Agent",
-      "description": "Performs security review and vulnerability analysis.",
+      "description": "Security & vulnerability review.",
       "entrypoint": "agents/security-agent.md"
     },
     {
       "id": "architect-agent",
       "name": "Architect Agent",
-      "description": "Reviews architecture and proposes refactors.",
+      "description": "Architecture and refactoring.",
       "entrypoint": "agents/architect-agent.md"
     },
     {
       "id": "meta-review-agent",
       "name": "Meta Review Agent",
-      "description": "Orchestrates combined reviews from all agents.",
+      "description": "Aggregates all agents.",
       "entrypoint": "agents/meta-review-agent.md"
     },
     {
       "id": "performance-agent",
       "name": "Performance Agent",
-      "description": "Analyzes performance and loading efficiency.",
+      "description": "Performance & profiling.",
       "entrypoint": "agents/performance-agent.md"
     },
     {
       "id": "accessibility-agent",
       "name": "Accessibility Agent",
-      "description": "Ensures accessibility and WCAG compliance.",
+      "description": "A11y & WCAG compliance.",
       "entrypoint": "agents/accessibility-agent.md"
     },
     {
       "id": "docs-agent",
       "name": "Docs Agent",
-      "description": "Creates and maintains documentation.",
+      "description": "Documentation writer.",
       "entrypoint": "agents/docs-agent.md"
     },
     {
       "id": "senior-dev-agent",
       "name": "Senior Developer Agent",
-      "description": "Implements features, refactors code, and fixes bugs.",
+      "description": "Implements features and fixes bugs.",
       "entrypoint": "agents/senior-dev-agent.md"
+    },
+    {
+      "id": "dev-pipeline-agent",
+      "name": "Dev Pipeline Agent",
+      "description": "Mini SDLC orchestrator.",
+      "entrypoint": "agents/dev-pipeline-agent.md"
+    },
+    {
+      "id": "product-owner-agent",
+      "name": "Product Owner Agent",
+      "description": "Writes epics/stories/AC.",
+      "entrypoint": "agents/product-owner-agent.md"
     }
   ]
 }
