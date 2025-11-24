@@ -134,3 +134,39 @@ nextBtn.addEventListener('click', () => {
 
 // Remove the old body click listener as we now handle it in the overlay
 // document.body.addEventListener('click', ...);
+
+// Initialize Touch Controls
+if (window.initTouchControls) {
+    initTouchControls({
+        containerEl: document.querySelector('.gallery-container'),
+        onSwipeLeft: () => {
+            // Swipe Left -> Next
+            const prevSlide = gallery.getCurrentSlide();
+            if (gallery.next()) {
+                updateState(prevSlide);
+            }
+        },
+        onSwipeRight: () => {
+            // Swipe Right -> Previous
+            const prevSlide = gallery.getCurrentSlide();
+            if (gallery.prev()) {
+                updateState(prevSlide);
+            }
+        },
+        onTap: () => {
+            // Toggle UI visibility
+            const controls = document.querySelector('.controls-wrapper');
+            if (controls) {
+                controls.classList.toggle('hidden');
+            }
+        },
+        onLongPress: () => {
+            // Toggle Audio Play/Pause
+            if (audioPlayer.audio.paused) {
+                audioPlayer.play();
+            } else {
+                audioPlayer.audio.pause();
+            }
+        }
+    });
+}
