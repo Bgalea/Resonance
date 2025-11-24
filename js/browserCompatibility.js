@@ -48,7 +48,7 @@
     // Expose globally
     window.AppCompatibility = compatibilityData;
 
-    console.log('Browser Compatibility:', compatibilityData);
+
 
     // UI Feedback for non-modern modes
     if (mode !== 'modern') {

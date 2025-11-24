@@ -65,22 +65,6 @@ body {
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
-    border-radius: 4px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    transition: opacity 0.3s ease;
-}
-
-/* Controls & Info */
-.controls-wrapper {
-    width: 100%;
-    max-width: 800px;
-    margin-bottom: 0.25rem;
-    letter-spacing: 0.5px;
-}
-
-.info-area p {
-    color: var(--text-secondary);
-    font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
@@ -329,21 +313,6 @@ img {
     user-select: none;
     -webkit-user-select: none;
     -webkit-touch-callout: none;
-    /* Disable iOS long-press menu */
-    pointer-events: auto;
-    /* Ensure clicks still work if needed, but block selection */
-}
-
-body {
-    /* Prevent text selection globally if desired, or just on specific areas */
-    /* user-select: none; */
-}
-
-/* Compatibility Banner */
-.compatibility-banner {
-    width: 100%;
-    padding: 10px 20px;
-    text-align: center;
     font-size: 0.9rem;
     z-index: 9999;
     position: fixed;
