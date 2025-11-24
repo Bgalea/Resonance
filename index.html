@@ -4,18 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" <!DOCTYPE html>
-    <html lang="en">
-
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="Content-Security-Policy"
-            content="default-src 'self'; img-src 'self' data:; media-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self'; frame-ancestors 'self';">
-        <title>Modern Audio Gallery</title>
-        <script src="js/browserCompatibility.js"></script>
-        <link rel="stylesheet" href="styles.css">
-    </head>
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; img-src 'self' data:; media-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self'; frame-ancestors 'self';">
+    <title>Modern Audio Gallery</title>
+    <script src="js/browserCompatibility.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
 
 <body>
     <!-- Compatibility Banner (will be injected if needed) -->
@@ -37,7 +31,7 @@
                 <p id="gallery-group">Group: -</p>
             </div>
 
-            <div class="audio-controls" role="group" aria-label="Audio Controls">
+            <div class="audio-controls" role="group" aria-label="Media Controls">
                 <button id="mute-btn" class="audio-btn" aria-label="Mute Audio" aria-pressed="false">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"
                         fill="currentColor">
@@ -47,6 +41,14 @@
                 </button>
                 <input type="range" id="volume-slider" class="audio-slider" min="0" max="1" step="0.01" value="1"
                     aria-label="Volume" aria-valuemin="0" aria-valuemax="1" aria-valuenow="1">
+
+                <button id="fullscreen-btn" class="audio-btn" aria-label="Toggle Fullscreen">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"
+                        fill="currentColor">
+                        <path
+                            d="M120-120v-200h80v120h120v80H120Zm520 0v-80h120v-120h80v200H640ZM120-640v-200h200v80H200v120h-80Zm640 0v-120H640v-80h200v200h-80Z" />
+                    </svg>
+                </button>
             </div>
 
             <div class="buttons-area">
