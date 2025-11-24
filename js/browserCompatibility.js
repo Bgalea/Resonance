@@ -55,13 +55,18 @@
         window.addEventListener('load', function () {
             var banner = document.createElement('div');
             banner.className = 'compatibility-banner ' + mode;
-            var msg = '<strong>Warning:</strong> Your browser is outdated. ';
+            var msg = document.createElement('span');
+            var strong = document.createElement('strong');
+            strong.textContent = 'Warning: ';
+            msg.appendChild(strong);
+
             if (mode === 'degraded') {
-                msg += 'Some features will not work. Please upgrade to a modern browser (Chrome, Edge, Firefox).';
+                msg.appendChild(document.createTextNode('Your browser is outdated. Some features will not work. Please upgrade to a modern browser (Chrome, Edge, Firefox).'));
             } else {
-                msg += 'You may experience reduced functionality.';
+                msg.appendChild(document.createTextNode('Your browser is outdated. You may experience reduced functionality.'));
             }
-            banner.innerHTML = msg; // Safe here as we control the content
+
+            banner.appendChild(msg);
             if (document.body) {
                 document.body.insertBefore(banner, document.body.firstChild);
             }

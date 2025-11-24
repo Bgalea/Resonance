@@ -126,7 +126,7 @@
                 // Remove interaction listeners
                 document.removeEventListener('mousemove', showControls);
                 document.removeEventListener('click', showControls);
-                document.removeEventListener('touchstart', showControls);
+                document.removeEventListener('touchstart', showControls, { passive: true }); // Match options for safety
             }
         }
 

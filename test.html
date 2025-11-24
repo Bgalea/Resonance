@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Gallery Unit Tests</title>
+    <style>
+        body {
+            font-family: monospace;
+            background: #222;
+            color: #eee;
+            padding: 20px;
+        }
+
+        .pass {
+            color: #4f4;
+        }
+
+        .fail {
+            color: #f44;
+        }
+
+        .summary {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Running Tests...</h1>
+    <div id="output"></div>
+
+    <!-- Load Modules -->
+    <script src="js/assetLoader.js"></script>
+    <script src="js/gallery.js"></script>
+    <script src="js/audioPlayer.js"></script>
+
+    <script>
+        const output = document.getElementById('output');
+        let passed = 0;
+        let failed = 0;
+
+        function log(msg, isPass) {
+            const div = document.createElement('div');
+            div.textContent = (isPass ? '[PASS] ' : '[FAIL] ') + msg;
+            div.className = isPass ? 'pass' : 'fail';
+            output.appendChild(div);
+            if (isPass) passed++; else failed++;
+        }
+
+        function assert(condition, msg) {
+            log(msg, condition);
+        }
+
+        async function runTests() {
+            // --- Test 1: Gallery Initialization ---
+            const mockConfig = {
+                groups: [
+                    { id: 'g1', images: [{ src: 'img1.jpg' }], audioSrc: 'audio1.mp3' },
+                    { id: 'g2', images: [{ src: 'img2.jpg' }], audioSrc: 'audio2.mp3' }
+                ]
+            };
+
+            // Mock AssetLoader to avoid real network calls
+            const mockLoader = {
+                preloadGroup: () => Promise.resolve()
+            };
+
+            const gallery = new Gallery(mockConfig, mockLoader);
+            assert(gallery.currentIndex === 0, 'Gallery starts at index 0');
+            assert(gallery.slides.length === 2, 'Gallery flattens config correctly');
+            assert(gallery.getCurrentSlide().groupId === 'g1', 'First slide has correct group');
+
+            // --- Test 2: Navigation ---
+            gallery.next();
+            assert(gallery.currentIndex === 1, 'Next() increments index');
+            assert(gallery.getCurrentSlide().groupId === 'g2', 'Next() moves to next group');
+
+            const moved = gallery.next();
+            assert(moved === false, 'Next() returns false at end');
+            assert(gallery.currentIndex === 1, 'Index does not exceed bounds');
+
+            // --- Test 3: AudioPlayer State ---
+            const player = new AudioPlayer();
+            player.setVolume(0.5);
+            assert(player.volume === 0.5, 'Volume is set correctly');
+
+            player.setMuted(true);
+            assert(player.isMuted === true, 'Mute state is set');
+            assert(player.audio.volume === 0, 'Audio element volume is 0 when muted');
+
+            player.setMuted(false);
+            assert(player.audio.volume === 0.5, 'Audio element volume restores when unmuted');
+
+            // --- Summary ---
+            const summary = document.createElement('div');
+            summary.className = 'summary';
+            summary.textContent = `Total: ${passed + failed} | Passed: ${passed} | Failed: ${failed}`;
+            document.body.appendChild(summary);
+        }
+
+        runTests().catch(e => {
+            const div = document.createElement('div');
+            div.textContent = 'Test Runner Error: ' + e.message;
+            div.className = 'fail';
+            output.appendChild(div);
+        });
+    </script>
+</body>
+
+</html>

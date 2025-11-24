@@ -11,6 +11,14 @@ const audioPlayer = new AudioPlayer();
 
 // DOM Elements
 const imageEl = document.getElementById('gallery-image');
+const captionEl = document.getElementById('gallery-caption');
+const infoEl = document.getElementById('gallery-info');
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
+const muteBtn = document.getElementById('mute-btn');
+const volumeSlider = document.getElementById('volume-slider');
+const loadingOverlay = document.getElementById('loading-overlay');
+const fullscreenBtn = document.getElementById('fullscreen-btn');
 
 // SECURITY: Basic Content Protection
 // Prevent right-click context menu on the image
@@ -24,23 +32,39 @@ imageEl.addEventListener('dragstart', (e) => {
     e.preventDefault();
     return false;
 });
-const captionEl = document.getElementById('gallery-caption');
-const infoEl = document.getElementById('gallery-info');
-const prevBtn = document.getElementById('prev-btn');
-const nextBtn = document.getElementById('next-btn');
-const muteBtn = document.getElementById('mute-btn');
-const volumeSlider = document.getElementById('volume-slider');
-const loadingOverlay = document.getElementById('loading-overlay');
 
-// Audio Control Logic
+// --- Navigation Logic (Extracted) ---
+
+function navigateNext() {
+    const prevSlide = gallery.getCurrentSlide();
+    if (gallery.next()) {
+        updateState(prevSlide);
+        return true;
+    }
+    return false;
+}
+
+function navigatePrev() {
+    const prevSlide = gallery.getCurrentSlide();
+    if (gallery.prev()) {
+        updateState(prevSlide);
+        return true;
+    }
+    return false;
+}
+
+// --- Audio Control Logic ---
+
 function updateAudioUI() {
     // Update Mute Button
     muteBtn.textContent = audioPlayer.isMuted ? '🔇' : '🔊';
     muteBtn.setAttribute('aria-label', audioPlayer.isMuted ? 'Unmute Audio' : 'Mute Audio');
+    muteBtn.setAttribute('aria-pressed', audioPlayer.isMuted);
 
     // Update Slider
     // We keep the slider at the volume level even if muted
     volumeSlider.value = audioPlayer.volume * 100;
+    volumeSlider.setAttribute('aria-valuenow', audioPlayer.volume * 100);
 }
 
 muteBtn.addEventListener('click', () => {
@@ -68,7 +92,7 @@ function updateState(prevSlide = null) {
 
     // 1. Update DOM
     imageEl.src = currentSlide.src;
-    imageEl.alt = currentSlide.caption;
+    imageEl.alt = currentSlide.caption; // Accessibility: Add alt text
     captionEl.textContent = currentSlide.caption;
     infoEl.textContent = `Group ${currentSlide.groupIndex} – Picture ${currentSlide.imageIndex} of ${currentSlide.groupTotal}`;
 
@@ -83,18 +107,55 @@ function updateState(prevSlide = null) {
     }
 }
 
-// Event Listeners
-prevBtn.addEventListener('click', () => {
-    const prevSlide = gallery.getCurrentSlide();
-    if (gallery.prev()) {
-        updateState(prevSlide);
-    }
-});
+// --- Event Listeners ---
 
-nextBtn.addEventListener('click', () => {
-    const prevSlide = gallery.getCurrentSlide();
-    if (gallery.next()) {
-        updateState(prevSlide);
+// Button Clicks
+prevBtn.addEventListener('click', navigatePrev);
+nextBtn.addEventListener('click', navigateNext);
+
+// Keyboard Navigation
+document.addEventListener('keydown', (e) => {
+    // Prevent if user is typing in an input (though we don't have text inputs, good practice)
+    if (e.target.tagName === 'INPUT' && e.target.type !== 'range') return;
+
+    switch (e.key) {
+        case 'ArrowLeft':
+            e.preventDefault();
+            navigatePrev();
+            break;
+        case 'ArrowRight':
+            e.preventDefault();
+            navigateNext();
+            break;
+        case ' ':
+        case 'Spacebar': // Older browsers
+            e.preventDefault();
+            if (audioPlayer.audio.paused) {
+                audioPlayer.play();
+            } else {
+                audioPlayer.audio.pause();
+            }
+            break;
+        case 'f':
+        case 'F':
+            if (fullscreenBtn) {
+                fullscreenBtn.click();
+            }
+            break;
+        case 'm':
+        case 'M':
+            muteBtn.click();
+            break;
+        case 'Escape':
+            // Exit fullscreen if active
+            if (document.fullscreenElement || document.webkitFullscreenElement) {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                }
+            }
+            break;
     }
 });
 
@@ -132,32 +193,17 @@ nextBtn.addEventListener('click', () => {
     }
 })();
 
-// Remove the old body click listener as we now handle it in the overlay
-// document.body.addEventListener('click', ...);
-
 // Initialize Touch Controls
 if (window.initTouchControls) {
     initTouchControls({
         containerEl: document.querySelector('.gallery-container'),
-        onSwipeLeft: () => {
-            // Swipe Left -> Next
-            const prevSlide = gallery.getCurrentSlide();
-            if (gallery.next()) {
-                updateState(prevSlide);
-            }
-        },
-        onSwipeRight: () => {
-            // Swipe Right -> Previous
-            const prevSlide = gallery.getCurrentSlide();
-            if (gallery.prev()) {
-                updateState(prevSlide);
-            }
-        },
+        onSwipeLeft: navigateNext,  // Use extracted function
+        onSwipeRight: navigatePrev, // Use extracted function
         onTap: () => {
             // Toggle UI visibility
             const controls = document.querySelector('.controls-wrapper');
             if (controls) {
-                controls.classList.toggle('hidden');
+                controls.classList.toggle('ui-hidden');
             }
         },
         onLongPress: () => {

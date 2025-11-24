@@ -8,6 +8,7 @@ class Gallery {
         this.slides = this._flattenConfig(config);
         this.currentIndex = 0;
         this.assetLoader = assetLoader;
+        this.isTransitioning = false; // Debounce flag
     }
 
     /**
@@ -15,31 +16,33 @@ class Gallery {
      * Preloads the first group before resolving.
      */
     async init() {
-        if (this.config.groups.length > 0) {
+        if (this.config.groups && this.config.groups.length > 0) {
             await this.assetLoader.preloadGroup(this.config.groups[0]);
         }
     }
 
     /**
-     * Flattens the nested group config into a linear list of slides.
-     * Each slide object will contain its image data plus group info.
-     * @param {Object} config - The gallery configuration object.
-     * @returns {Array} - Array of slide objects.
+     * Flattens the nested config into a single array of slides.
+     * @param {Object} config 
+     * @returns {Array}
      */
     _flattenConfig(config) {
         const slides = [];
+        if (!config.groups) return slides;
+
         config.groups.forEach((group, groupIndex) => {
-            group.images.forEach((image, imageIndex) => {
-                slides.push({
-                    ...image,
-                    groupIndex: groupIndex + 1, // 1-based for display
-                    groupTotal: group.images.length,
-                    imageIndex: imageIndex + 1, // 1-based for display
-                    audioSrc: group.audioSrc,
-                    groupId: group.id,
-                    groupObj: group // Store reference to full group object for preloading
+            if (group.images) {
+                group.images.forEach((image, imageIndex) => {
+                    slides.push({
+                        ...image,
+                        groupId: group.id,
+                        audioSrc: group.audioSrc,
+                        groupIndex: groupIndex,
+                        imageIndex: imageIndex,
+                        groupTotal: group.images.length
+                    });
                 });
-            });
+            }
         });
         return slides;
     }
@@ -48,6 +51,16 @@ class Gallery {
      * Returns the current slide object.
      */
     getCurrentSlide() {
+        if (!this.slides || this.slides.length === 0) {
+            return {
+                src: '',
+                caption: 'No images found',
+                groupIndex: 0,
+                imageIndex: 0,
+                groupTotal: 0,
+                audioSrc: null
+            };
+        }
         return this.slides[this.currentIndex];
     }
 
@@ -56,9 +69,18 @@ class Gallery {
      * @returns {boolean} - True if moved, False if at the end.
      */
     next() {
+        if (this.isTransitioning) return false;
+
         if (this.hasNext()) {
+            this.isTransitioning = true;
             this.currentIndex++;
             this._preloadNextGroup();
+
+            // Simple debounce reset
+            setTimeout(() => {
+                this.isTransitioning = false;
+            }, 300);
+
             return true;
         }
         return false;
@@ -69,11 +91,17 @@ class Gallery {
      * @returns {boolean} - True if moved, False if at the start.
      */
     prev() {
+        if (this.isTransitioning) return false;
+
         if (this.hasPrevious()) {
+            this.isTransitioning = true;
             this.currentIndex--;
-            // Optional: Preload previous group? 
-            // Usually we move forward, but we could preload prev group too if needed.
-            // For now, let's stick to forward preloading as per requirements.
+
+            // Simple debounce reset
+            setTimeout(() => {
+                this.isTransitioning = false;
+            }, 300);
+
             return true;
         }
         return false;

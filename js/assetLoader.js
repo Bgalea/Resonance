@@ -1,10 +1,63 @@
 /**
  * AssetLoader Class
- * Handles preloading of images and audio to ensure smooth playback.
+ * Handles preloading of images and audio with caching, concurrency limits, and deduplication.
  */
 class AssetLoader {
-    constructor() {
-        this.cache = new Set();
+    constructor(options = {}) {
+        this.cache = new Map(); // Use Map for LRU
+        this.maxCacheSize = options.maxCacheSize || 50;
+        this.concurrencyLimit = options.concurrencyLimit || 6;
+        this.activeRequests = 0;
+        this.queue = [];
+        this.pendingRequests = new Map(); // Deduplication
+    }
+
+    /**
+     * Adds an item to the cache, enforcing LRU policy.
+     * @param {string} key 
+     * @param {any} value 
+     */
+    _addToCache(key, value) {
+        if (this.cache.has(key)) {
+            this.cache.delete(key); // Refresh position
+        } else if (this.cache.size >= this.maxCacheSize) {
+            // Remove oldest (first item in Map)
+            const firstKey = this.cache.keys().next().value;
+            this.cache.delete(firstKey);
+        }
+        this.cache.set(key, value);
+    }
+
+    /**
+     * Queues a request to be processed.
+     * @param {Function} requestFn - Function returning a promise.
+     * @returns {Promise}
+     */
+    _enqueue(requestFn) {
+        return new Promise((resolve, reject) => {
+            this.queue.push({ requestFn, resolve, reject });
+            this._processQueue();
+        });
+    }
+
+    /**
+     * Processes the request queue respecting concurrency limits.
+     */
+    _processQueue() {
+        if (this.activeRequests >= this.concurrencyLimit || this.queue.length === 0) {
+            return;
+        }
+
+        const { requestFn, resolve, reject } = this.queue.shift();
+        this.activeRequests++;
+
+        requestFn()
+            .then(resolve)
+            .catch(reject)
+            .finally(() => {
+                this.activeRequests--;
+                this._processQueue();
+            });
     }
 
     /**
@@ -13,21 +66,35 @@ class AssetLoader {
      * @returns {Promise}
      */
     preloadImage(src) {
-        if (!src || this.cache.has(src)) return Promise.resolve();
+        if (!src) return Promise.resolve();
+        if (this.cache.has(src)) {
+            // Refresh LRU
+            const val = this.cache.get(src);
+            this.cache.delete(src);
+            this.cache.set(src, val);
+            return Promise.resolve(src);
+        }
+        if (this.pendingRequests.has(src)) return this.pendingRequests.get(src);
 
-        return new Promise((resolve, reject) => {
+        const requestFn = () => new Promise((resolve) => {
             const img = new Image();
             img.onload = () => {
-                this.cache.add(src);
+                this._addToCache(src, true);
                 resolve(src);
             };
             img.onerror = () => {
                 console.warn(`Failed to load image: ${src}`);
-                // Resolve anyway to not block the group load
-                resolve(src);
+                resolve(null); // Resolve null on failure
             };
             img.src = src;
         });
+
+        const promise = this._enqueue(requestFn).finally(() => {
+            this.pendingRequests.delete(src);
+        });
+
+        this.pendingRequests.set(src, promise);
+        return promise;
     }
 
     /**
@@ -36,14 +103,16 @@ class AssetLoader {
      * @returns {Promise}
      */
     preloadAudio(src) {
-        if (!src || this.cache.has(src)) return Promise.resolve();
+        if (!src) return Promise.resolve();
+        if (this.cache.has(src)) return Promise.resolve(src);
+        if (this.pendingRequests.has(src)) return this.pendingRequests.get(src);
 
-        return new Promise((resolve, reject) => {
+        const requestFn = () => new Promise((resolve) => {
             const audio = new Audio();
             audio.preload = 'auto';
 
             const onCanPlay = () => {
-                this.cache.add(src);
+                this._addToCache(src, true);
                 cleanup();
                 resolve(src);
             };
@@ -51,8 +120,7 @@ class AssetLoader {
             const onError = () => {
                 console.warn(`Failed to load audio: ${src}`);
                 cleanup();
-                // Resolve anyway to not block
-                resolve(src);
+                resolve(null);
             };
 
             const cleanup = () => {
@@ -66,6 +134,13 @@ class AssetLoader {
             audio.src = src;
             audio.load();
         });
+
+        const promise = this._enqueue(requestFn).finally(() => {
+            this.pendingRequests.delete(src);
+        });
+
+        this.pendingRequests.set(src, promise);
+        return promise;
     }
 
     /**

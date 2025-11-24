@@ -36,9 +36,11 @@
         let longPressTriggered = false;
         let isDragging = false;
 
-        const SWIPE_THRESHOLD = 50; // Minimum distance for a swipe
-        const TAP_THRESHOLD = 10;   // Maximum movement for a tap
-        const LONG_PRESS_DURATION = 800; // ms
+
+
+        const SWIPE_THRESHOLD = options.swipeThreshold || 50;
+        const TAP_THRESHOLD = options.tapThreshold || 10;
+        const LONG_PRESS_DURATION = options.longPressDuration || 800;
 
         // Touch Start
         containerEl.addEventListener('touchstart', (e) => {

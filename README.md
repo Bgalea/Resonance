@@ -96,20 +96,6 @@ While client-side protection is never absolute, this project implements "best-ef
 
 ## 4. Cross-Browser Compatibility
 
-The application includes an automatic runtime compatibility system:
-
--   **Modern Mode**: Full feature set. Uses ES6+ features (Promises, Fetch, Modules, Arrow Functions). Supported by Chrome, Firefox, Safari, Edge (latest versions).
--   **Fallback Mode**: For browsers missing minor features.
--   **Degraded Mode**: For legacy browsers (e.g., older IE). Displays a prominent warning banner advising the user to upgrade, as core features like `fetch` or `Promise` may be missing.
-
-**Detection**: `js/browserCompatibility.js` runs immediately on load to detect capabilities and injects a warning banner if necessary.
-
----
-
-## 5. Responsive Design
-
--   **Mobile-First**: Layout is optimized for small screens and scales up.
--   **Adaptive Layout**:
     -   **Mobile**: Vertical stack, maximized image area, touch-friendly buttons.
     -   **Tablet**: Adjusted spacing and sizing.
     -   **Desktop**: Centered layout with max-width constraints for optimal viewing.
@@ -162,6 +148,26 @@ The application includes an automatic runtime compatibility system:
 -   **Client-Side Protection**: It is impossible to fully prevent determined users from downloading images that are displayed in the browser.
 -   **Autoplay Policies**: Modern browsers may block audio autoplay until the user interacts with the page (click/tap). The "Click to Enter" overlay handles this.
 -   **Memory**: Very large galleries (hundreds of high-res images) may impact performance on low-end mobile devices without the "Smart Lazy Loading" feature.
+
+---
+
+## 10. Troubleshooting
+
+### Audio Doesn't Play
+- **Cause**: Browsers block auto-playing audio to prevent annoyance.
+- **Fix**: The gallery requires a user interaction (click/tap) to start. Ensure you click the "Click to Enter" overlay.
+
+### Images/Audio Not Loading (Local Files)
+- **Cause**: Opening `index.html` directly (file:// protocol) often blocks loading external assets due to CORS security.
+- **Fix**: You must use a local web server (e.g., `npx serve`, Python `http.server`, or VS Code Live Server).
+
+### Fullscreen Not Working
+- **Cause**: Some mobile browsers (especially on iOS) restrict fullscreen API or require it to be triggered by a direct user gesture.
+- **Fix**: Ensure you are tapping the fullscreen button directly. Note that iOS Safari has limited fullscreen API support compared to Android.
+
+### "Browser Outdated" Warning
+- **Cause**: You are using a browser that lacks ES6 features (Promises, Fetch).
+- **Fix**: Update to the latest version of Chrome, Firefox, Edge, or Safari.
 
 ---
 
