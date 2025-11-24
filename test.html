@@ -36,6 +36,8 @@
     <script src="js/assetLoader.js"></script>
     <script src="js/gallery.js"></script>
     <script src="js/audioPlayer.js"></script>
+    <script src="js/touchControls.js"></script>
+    <script src="js/fullscreen.js"></script>
 
     <script>
         const output = document.getElementById('output');
@@ -54,45 +56,140 @@
             log(msg, condition);
         }
 
+        // --- Mocks ---
+        class MockImage {
+            set src(url) {
+                setTimeout(() => {
+                    if (this.onload) this.onload();
+                }, 10);
+            }
+        }
+        window.Image = MockImage;
+
+        class MockAudio {
+            load() {
+                setTimeout(() => {
+                    this.dispatchEvent(new Event('canplaythrough'));
+                }, 10);
+            }
+            addEventListener(event, callback) {
+                this['on' + event] = callback;
+            }
+            removeEventListener() { }
+            dispatchEvent(event) {
+                if (this['on' + event.type]) this['on' + event.type](event);
+            }
+        }
+        window.Audio = MockAudio;
+
         async function runTests() {
-            // --- Test 1: Gallery Initialization ---
+            console.log("Starting Tests...");
+
+            // --- Test Suite 1: AssetLoader ---
+            log("--- AssetLoader Tests ---", true);
+            const loader = new AssetLoader({ maxCacheSize: 2 });
+
+            // Test 1.1: Caching & LRU
+            await loader.preloadImage('img1.jpg');
+            await loader.preloadImage('img2.jpg');
+            assert(loader.cache.has('img1.jpg'), 'Image 1 cached');
+            assert(loader.cache.has('img2.jpg'), 'Image 2 cached');
+
+            await loader.preloadImage('img3.jpg'); // Should evict img1
+            assert(!loader.cache.has('img1.jpg'), 'Image 1 evicted (LRU)');
+            assert(loader.cache.has('img3.jpg'), 'Image 3 cached');
+
+            // Test 1.2: Deduplication
+            const p1 = loader.preloadImage('img4.jpg');
+            const p2 = loader.preloadImage('img4.jpg');
+            assert(p1 === p2, 'Duplicate requests return same promise');
+            await p1;
+
+            // --- Test Suite 2: Gallery Logic ---
+            log("--- Gallery Tests ---", true);
             const mockConfig = {
                 groups: [
-                    { id: 'g1', images: [{ src: 'img1.jpg' }], audioSrc: 'audio1.mp3' },
-                    { id: 'g2', images: [{ src: 'img2.jpg' }], audioSrc: 'audio2.mp3' }
+                    { id: 'g1', images: [{ src: 'img1.jpg' }, { src: 'img2.jpg' }], audioSrc: 'audio1.mp3' },
+                    { id: 'g2', images: [{ src: 'img3.jpg' }], audioSrc: 'audio2.mp3' }
                 ]
             };
+            const gallery = new Gallery(mockConfig, loader);
 
-            // Mock AssetLoader to avoid real network calls
-            const mockLoader = {
-                preloadGroup: () => Promise.resolve()
-            };
+            // Test 2.1: Init & Flattening
+            assert(gallery.slides.length === 3, 'Config flattened correctly (3 slides)');
+            assert(gallery.getCurrentSlide().src === 'img1.jpg', 'Starts at first slide');
 
-            const gallery = new Gallery(mockConfig, mockLoader);
-            assert(gallery.currentIndex === 0, 'Gallery starts at index 0');
-            assert(gallery.slides.length === 2, 'Gallery flattens config correctly');
-            assert(gallery.getCurrentSlide().groupId === 'g1', 'First slide has correct group');
+            // Test 2.2: Navigation Boundaries
+            assert(gallery.hasPrevious() === false, 'No previous at start');
+            assert(gallery.hasNext() === true, 'Has next at start');
 
-            // --- Test 2: Navigation ---
+            gallery.prev();
+            assert(gallery.currentIndex === 0, 'Prev() at start does nothing');
+
+            // Test 2.3: Forward Navigation
             gallery.next();
-            assert(gallery.currentIndex === 1, 'Next() increments index');
-            assert(gallery.getCurrentSlide().groupId === 'g2', 'Next() moves to next group');
+            assert(gallery.currentIndex === 1, 'Moved to slide 2');
+            assert(gallery.getCurrentSlide().src === 'img2.jpg', 'Correct slide content');
 
-            const moved = gallery.next();
-            assert(moved === false, 'Next() returns false at end');
-            assert(gallery.currentIndex === 1, 'Index does not exceed bounds');
+            // Manually reset debounce for testing
+            gallery.isTransitioning = false;
 
-            // --- Test 3: AudioPlayer State ---
+            gallery.next();
+            assert(gallery.currentIndex === 2, 'Moved to slide 3 (Group 2)');
+            assert(gallery.getCurrentSlide().groupId === 'g2', 'Group changed to g2');
+            assert(gallery.hasNext() === false, 'No next at end');
+
+            // Test 2.4: Backward Navigation
+            // Manually reset debounce for testing
+            gallery.isTransitioning = false;
+
+            gallery.prev();
+            assert(gallery.currentIndex === 1, 'Moved back to slide 2');
+            assert(gallery.getCurrentSlide().groupId === 'g1', 'Group changed back to g1');
+
+            // --- Test Suite 3: AudioPlayer ---
+            log("--- AudioPlayer Tests ---", true);
             const player = new AudioPlayer();
-            player.setVolume(0.5);
-            assert(player.volume === 0.5, 'Volume is set correctly');
+
+            player.setVolume(0.8);
+            assert(player.volume === 0.8, 'Volume set correctly');
 
             player.setMuted(true);
-            assert(player.isMuted === true, 'Mute state is set');
-            assert(player.audio.volume === 0, 'Audio element volume is 0 when muted');
+            assert(player.isMuted === true, 'Muted is true');
+            assert(player.audio.volume === 0, 'Actual audio volume is 0');
 
             player.setMuted(false);
-            assert(player.audio.volume === 0.5, 'Audio element volume restores when unmuted');
+            assert(player.audio.volume === 0.8, 'Volume restored after unmute');
+
+            // --- Test Suite 4: Fullscreen ---
+            log("--- Fullscreen Tests ---", true);
+            const fsBtn = document.createElement('button');
+            let requestedFs = false;
+            let exitedFs = false;
+
+            // Mock Fullscreen API
+            const mockRoot = {
+                requestFullscreen: () => { requestedFs = true; }
+            };
+            document.exitFullscreen = () => { exitedFs = true; };
+
+            // Mock document.fullscreenElement property
+            Object.defineProperty(document, 'fullscreenElement', {
+                get: () => requestedFs && !exitedFs ? mockRoot : null,
+                configurable: true
+            });
+
+            initFullscreen({
+                rootEl: mockRoot,
+                fullscreenButtonEl: fsBtn
+            });
+
+            // Test Toggle
+            fsBtn.click();
+            assert(requestedFs === true, 'Request Fullscreen called');
+
+            fsBtn.click();
+            assert(exitedFs === true, 'Exit Fullscreen called');
 
             // --- Summary ---
             const summary = document.createElement('div');
@@ -102,6 +199,7 @@
         }
 
         runTests().catch(e => {
+            console.error(e);
             const div = document.createElement('div');
             div.textContent = 'Test Runner Error: ' + e.message;
             div.className = 'fail';

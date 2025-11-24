@@ -17,7 +17,13 @@ class Gallery {
      */
     async init() {
         if (this.config.groups && this.config.groups.length > 0) {
-            await this.assetLoader.preloadGroup(this.config.groups[0]);
+            const firstGroup = this.config.groups[0];
+
+            // Critical Path: Wait only for Audio + 1st Image
+            await this.assetLoader.preloadGroupCritical(firstGroup);
+
+            // Background Path: Load the rest of the group without blocking
+            this.assetLoader.preloadGroupBackground(firstGroup);
         }
     }
 

@@ -149,22 +149,55 @@ class AssetLoader {
      * @returns {Promise}
      */
     preloadGroup(group) {
+        // Fallback to critical + background if called directly
+        return this.preloadGroupCritical(group).then(() => {
+            this.preloadGroupBackground(group);
+        });
+    }
+
+    /**
+     * Preloads only critical assets (Audio + First Image).
+     * @param {Object} group 
+     * @returns {Promise}
+     */
+    preloadGroupCritical(group) {
         if (!group) return Promise.resolve();
 
         const promises = [];
 
-        // Preload audio
+        // 1. Audio is critical for the experience
         if (group.audioSrc) {
             promises.push(this.preloadAudio(group.audioSrc));
         }
 
-        // Preload all images in the group
-        if (group.images) {
-            group.images.forEach(img => {
-                if (img.src) {
-                    promises.push(this.preloadImage(img.src));
-                }
-            });
+        // 2. First image is critical for UI
+        if (group.images && group.images.length > 0) {
+            const firstImg = group.images[0];
+            if (firstImg.src) {
+                promises.push(this.preloadImage(firstImg.src));
+            }
+        }
+
+        return Promise.all(promises);
+    }
+
+    /**
+     * Preloads the remaining assets in the background.
+     * @param {Object} group 
+     * @returns {Promise}
+     */
+    preloadGroupBackground(group) {
+        if (!group || !group.images || group.images.length <= 1) {
+            return Promise.resolve();
+        }
+
+        const promises = [];
+        // Start from index 1 (skip first image)
+        for (let i = 1; i < group.images.length; i++) {
+            const img = group.images[i];
+            if (img.src) {
+                promises.push(this.preloadImage(img.src));
+            }
         }
 
         return Promise.all(promises);
