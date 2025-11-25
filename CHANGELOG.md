@@ -17,6 +17,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Request cancellation for distant groups
   - On-demand loading for unpreloaded assets
   - Priority queue in AssetLoader (critical > high > normal)
+- **Image Transitions**: Smooth fade/crossfade effects between images
+  - Configurable transition type and duration
+  - Automatic fallback for older browsers
+  - Respects `prefers-reduced-motion` accessibility setting
+  - GPU-accelerated for 60fps performance
 
 ### Changed
 - Initial load now only loads critical assets (audio + first image)

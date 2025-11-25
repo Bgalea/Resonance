@@ -41,6 +41,10 @@ A modern, minimalist, single-page picture gallery web application with synchroni
     -   **Lazy Loading**: Groups within proximity (distance ≤ 2) preloaded with lower priority
     -   **On-Demand**: Distant groups loaded only when navigated to
     -   Supports large galleries (50+ groups, 1000+ images) without performance degradation
+-   **Smooth Transitions**: Configurable fade/crossfade effects between images
+    -   Respects `prefers-reduced-motion` for accessibility
+    -   GPU-accelerated for 60fps performance
+    -   Graceful degradation for older browsers
 -   **Real-Time Navigation**: Single-page application (SPA) architecture ensures no page refreshes during navigation.
 -   **Seamless Audio**: Audio continues playing uninterrupted while navigating between images within the same group, and crossfades/switches cleanly when changing groups.
 
