@@ -29,13 +29,30 @@ class AssetLoader {
     }
 
     /**
-     * Queues a request to be processed.
+     * Queues a request to be processed with priority.
      * @param {Function} requestFn - Function returning a promise.
+     * @param {string} priority - Priority level: 'critical', 'high', or 'normal'
      * @returns {Promise}
      */
-    _enqueue(requestFn) {
+    _enqueue(requestFn, priority = 'normal') {
         return new Promise((resolve, reject) => {
-            this.queue.push({ requestFn, resolve, reject });
+            const item = { requestFn, resolve, reject, priority };
+
+            // Insert based on priority (critical > high > normal)
+            const priorityOrder = { critical: 0, high: 1, normal: 2 };
+            const itemPriority = priorityOrder[priority] || 2;
+
+            // Find insertion point to maintain priority order
+            let insertIndex = this.queue.length;
+            for (let i = 0; i < this.queue.length; i++) {
+                const queuePriority = priorityOrder[this.queue[i].priority] || 2;
+                if (itemPriority < queuePriority) {
+                    insertIndex = i;
+                    break;
+                }
+            }
+
+            this.queue.splice(insertIndex, 0, item);
             this._processQueue();
         });
     }
@@ -61,11 +78,42 @@ class AssetLoader {
     }
 
     /**
-     * Preloads an image.
+     * Cancels pending requests matching the filter function.
+     * @param {Function} filterFn - Function that returns true for requests to cancel.
+     */
+    cancelPendingRequests(filterFn) {
+        if (!filterFn) return;
+
+        // Remove matching items from queue
+        this.queue = this.queue.filter(item => {
+            const shouldCancel = filterFn(item);
+            if (shouldCancel) {
+                // Reject the promise to clean up
+                item.reject(new Error('Request cancelled'));
+            }
+            return !shouldCancel;
+        });
+    }
+
+    /**
+     * Gets the loading state of an asset.
+     * @param {string} src - Asset URL.
+     * @returns {string} - 'loaded', 'loading', or 'unloaded'
+     */
+    getAssetState(src) {
+        if (!src) return 'unloaded';
+        if (this.cache.has(src)) return 'loaded';
+        if (this.pendingRequests.has(src)) return 'loading';
+        return 'unloaded';
+    }
+
+    /**
+     * Preloads an image with optional priority.
      * @param {string} src - Image URL.
+     * @param {string} priority - Priority level: 'critical', 'high', or 'normal'
      * @returns {Promise}
      */
-    preloadImage(src) {
+    preloadImage(src, priority = 'normal') {
         if (!src) return Promise.resolve();
         if (this.cache.has(src)) {
             // Refresh LRU
@@ -89,7 +137,7 @@ class AssetLoader {
             img.src = src;
         });
 
-        const promise = this._enqueue(requestFn).finally(() => {
+        const promise = this._enqueue(requestFn, priority).finally(() => {
             this.pendingRequests.delete(src);
         });
 
@@ -98,11 +146,12 @@ class AssetLoader {
     }
 
     /**
-     * Preloads an audio file.
+     * Preloads an audio file with optional priority.
      * @param {string} src - Audio URL.
+     * @param {string} priority - Priority level: 'critical', 'high', or 'normal'
      * @returns {Promise}
      */
-    preloadAudio(src) {
+    preloadAudio(src, priority = 'normal') {
         if (!src) return Promise.resolve();
         if (this.cache.has(src)) return Promise.resolve(src);
         if (this.pendingRequests.has(src)) return this.pendingRequests.get(src);
@@ -135,7 +184,7 @@ class AssetLoader {
             audio.load();
         });
 
-        const promise = this._enqueue(requestFn).finally(() => {
+        const promise = this._enqueue(requestFn, priority).finally(() => {
             this.pendingRequests.delete(src);
         });
 
@@ -146,35 +195,37 @@ class AssetLoader {
     /**
      * Preloads all assets for a specific group.
      * @param {Object} group - The group object from config.
+     * @param {string} priority - Priority level for loading.
      * @returns {Promise}
      */
-    preloadGroup(group) {
+    preloadGroup(group, priority = 'normal') {
         // Fallback to critical + background if called directly
-        return this.preloadGroupCritical(group).then(() => {
-            this.preloadGroupBackground(group);
+        return this.preloadGroupCritical(group, priority).then(() => {
+            this.preloadGroupBackground(group, priority);
         });
     }
 
     /**
      * Preloads only critical assets (Audio + First Image).
      * @param {Object} group 
+     * @param {string} priority - Priority level for loading.
      * @returns {Promise}
      */
-    preloadGroupCritical(group) {
+    preloadGroupCritical(group, priority = 'critical') {
         if (!group) return Promise.resolve();
 
         const promises = [];
 
         // 1. Audio is critical for the experience
         if (group.audioSrc) {
-            promises.push(this.preloadAudio(group.audioSrc));
+            promises.push(this.preloadAudio(group.audioSrc, priority));
         }
 
         // 2. First image is critical for UI
         if (group.images && group.images.length > 0) {
             const firstImg = group.images[0];
             if (firstImg.src) {
-                promises.push(this.preloadImage(firstImg.src));
+                promises.push(this.preloadImage(firstImg.src, priority));
             }
         }
 
@@ -184,9 +235,10 @@ class AssetLoader {
     /**
      * Preloads the remaining assets in the background.
      * @param {Object} group 
+     * @param {string} priority - Priority level for loading.
      * @returns {Promise}
      */
-    preloadGroupBackground(group) {
+    preloadGroupBackground(group, priority = 'normal') {
         if (!group || !group.images || group.images.length <= 1) {
             return Promise.resolve();
         }
@@ -196,7 +248,7 @@ class AssetLoader {
         for (let i = 1; i < group.images.length; i++) {
             const img = group.images[i];
             if (img.src) {
-                promises.push(this.preloadImage(img.src));
+                promises.push(this.preloadImage(img.src, priority));
             }
         }
 

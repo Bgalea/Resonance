@@ -18,7 +18,11 @@ const nextBtn = document.getElementById('next-btn');
 const muteBtn = document.getElementById('mute-btn');
 const volumeSlider = document.getElementById('volume-slider');
 const loadingOverlay = document.getElementById('loading-overlay');
+const imageLoadingOverlay = document.getElementById('image-loading');
 const fullscreenBtn = document.getElementById('fullscreen-btn');
+
+// Initialize Loading State Manager
+const loadingStateManager = new LoadingStateManager(assetLoader, imageEl, imageLoadingOverlay);
 
 // SECURITY: Basic Content Protection
 // Prevent right-click context menu on the image
@@ -89,22 +93,30 @@ updateAudioUI();
  * Also handles audio transitions if the group has changed.
  * @param {Object} prevSlide - The previous slide object (can be null on init).
  */
-function updateState(prevSlide = null) {
+async function updateState(prevSlide = null) {
     const currentSlide = gallery.getCurrentSlide();
 
-    // 1. Update DOM
+    // 1. Check if image is ready, load on-demand if needed
+    const imageReady = loadingStateManager.isImageReady(currentSlide.src);
+
+    if (!imageReady) {
+        // Show loading indicator and wait for image
+        await loadingStateManager.waitForImage(currentSlide.src);
+    }
+
+    // 2. Update DOM
     imageEl.src = currentSlide.src;
     imageEl.alt = currentSlide.caption; // Accessibility: Add alt text
+    imageEl.classList.add('image-loaded'); // Add fade-in animation
     captionEl.textContent = currentSlide.caption;
     infoEl.textContent = `Group ${currentSlide.groupIndex + 1} – Picture ${currentSlide.imageIndex + 1} of ${currentSlide.groupTotal}`;
 
-    // 2. Update Buttons
+    // 3. Update Buttons
     prevBtn.disabled = !gallery.hasPrevious();
     nextBtn.disabled = !gallery.hasNext();
 
-    // 3. Handle Audio
+    // 4. Handle Audio
     if (!prevSlide || gallery.isNewGroup(prevSlide, currentSlide)) {
-        console.log(`Switching audio to: ${currentSlide.audioSrc}`);
         audioPlayer.setTrack(currentSlide.audioSrc);
     }
 }

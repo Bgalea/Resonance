@@ -19,11 +19,11 @@ class Gallery {
         if (this.config.groups && this.config.groups.length > 0) {
             const firstGroup = this.config.groups[0];
 
-            // Critical Path: Wait only for Audio + 1st Image
-            await this.assetLoader.preloadGroupCritical(firstGroup);
+            // Critical Path: Wait only for Audio + 1st Image (with critical priority)
+            await this.assetLoader.preloadGroupCritical(firstGroup, 'critical');
 
-            // Background Path: Load the rest of the group without blocking
-            this.assetLoader.preloadGroupBackground(firstGroup);
+            // Background Path: Load the rest of the first group and adjacent groups
+            this._preloadAdjacentGroups();
         }
     }
 
@@ -80,7 +80,7 @@ class Gallery {
         if (this.hasNext()) {
             this.isTransitioning = true;
             this.currentIndex++;
-            this._preloadNextGroup();
+            this._preloadAdjacentGroups();
 
             // Simple debounce reset
             setTimeout(() => {
@@ -102,6 +102,7 @@ class Gallery {
         if (this.hasPrevious()) {
             this.isTransitioning = true;
             this.currentIndex--;
+            this._preloadAdjacentGroups();
 
             // Simple debounce reset
             setTimeout(() => {
@@ -137,15 +138,49 @@ class Gallery {
     }
 
     /**
-     * Preloads the next group's assets in the background.
+     * Determines if a group should be preloaded based on proximity.
+     * @param {number} targetGroupIndex - Index of the group to check.
+     * @returns {string|null} - Priority level or null if too far.
      */
-    _preloadNextGroup() {
+    _shouldPreloadGroup(targetGroupIndex) {
         const currentSlide = this.getCurrentSlide();
-        const nextGroupIndex = this.config.groups.findIndex(g => g.id === currentSlide.groupId) + 1;
+        const currentGroupIndex = currentSlide.groupIndex;
+        const distance = Math.abs(targetGroupIndex - currentGroupIndex);
 
-        if (nextGroupIndex < this.config.groups.length) {
-            const nextGroup = this.config.groups[nextGroupIndex];
-            this.assetLoader.preloadGroup(nextGroup);
+        if (distance === 0) return 'critical';  // Current group
+        if (distance === 1) return 'high';      // Adjacent groups
+        if (distance <= 2) return 'normal';     // Near groups (lazy load)
+        return null;                             // Too far, don't preload
+    }
+
+    /**
+     * Preloads adjacent groups based on proximity to current position.
+     */
+    _preloadAdjacentGroups() {
+        const currentSlide = this.getCurrentSlide();
+        const currentGroupIndex = currentSlide.groupIndex;
+
+        // Preload current group's remaining images (high priority)
+        const currentGroup = this.config.groups[currentGroupIndex];
+        if (currentGroup) {
+            this.assetLoader.preloadGroupBackground(currentGroup, 'high');
+        }
+
+        // Preload adjacent groups (within distance 2)
+        for (let i = 0; i < this.config.groups.length; i++) {
+            const priority = this._shouldPreloadGroup(i);
+
+            if (priority && priority !== 'critical') {
+                const group = this.config.groups[i];
+
+                if (priority === 'high') {
+                    // Adjacent groups: load critical assets (audio + first image)
+                    this.assetLoader.preloadGroupCritical(group, 'high');
+                } else if (priority === 'normal') {
+                    // Near groups: lazy load critical assets only
+                    this.assetLoader.preloadGroupCritical(group, 'normal');
+                }
+            }
         }
     }
 }

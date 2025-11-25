@@ -1,0 +1,85 @@
+@dev-pipeline-agent 
+I want to run a full CI/CD-style agent pipeline for this change.
+
+### Task
+- Type: feature | bugfix | refactor
+- Description: <your description here>
+
+### Acceptance Criteria
+- <AC 1>
+- <AC 2>
+- <AC 3>
+
+### CI/CD Agent Pipeline
+
+Please follow this exact agent order:
+
+1. **Specification**
+   - Use `product-owner-agent` to:
+     - Clarify and structure the feature.
+     - Produce epics, user stories, and acceptance criteria (Gherkin).
+     - Identify edge cases, NFRs, dependencies, and priority.
+
+2. **Architecture**
+   - Use `architect-agent` to:
+     - Propose the technical approach or review the existing one.
+     - Ensure the design is compatible with current architecture.
+     - Suggest clean modular boundaries.
+
+3. **Experience Design**
+   - If available, use:
+     - `ui-designer-agent` for visual/UI considerations.
+     - `ux-agent` for flows, interactions, and mobile responsiveness.
+   - If these agents are not defined, explicitly state that this stage is skipped.
+
+4. **Implementation**
+   - Use `senior-dev-agent` to:
+     - Implement or refactor the feature.
+     - Provide patch-style or full file changes.
+     - Explain key decisions and any trade-offs.
+
+5. **Quality Gates** (conceptually in parallel)
+   - Use `test-agent` to:
+     - Validate against acceptance criteria.
+     - Propose tests (unit/integration/E2E).
+   - Use `security-agent` to:
+     - Identify security issues and required mitigations.
+   - Use `performance-agent` to:
+     - Identify performance risks and improvements.
+   - Use `accessibility-agent` to:
+     - Identify a11y issues and suggested fixes.
+
+6. **Documentation**
+   - Use `docs-agent` to:
+     - Propose updates to README, BACKLOG, CHANGELOG, and any relevant docs.
+     - Summarize how the feature should be communicated to developers/users.
+
+7. **Aggregation**
+   - Finally, call `meta-review-agent` to:
+     - Aggregate all outputs.
+     - Deduplicate overlapping findings.
+     - Prioritize items into:
+       - Blockers
+       - High priority
+       - Medium / later
+     - Produce a clear, actionable action plan.
+
+### Output Format
+
+Please return a single consolidated report with:
+
+1. Pipeline Summary
+2. Specification Summary (from PO)
+3. Architecture Summary
+4. Experience Design Summary (or “skipped”)
+5. Implementation Summary + Code Changes
+6. Quality Gates:
+   - Functional/QA
+   - Security
+   - Performance
+   - Accessibility
+7. Documentation Suggestions
+8. Final Prioritized Action Plan
+   - Immediate (must do now)
+   - Short-term
+   - Longer-term

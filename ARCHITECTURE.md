@@ -28,8 +28,16 @@ The Modern Audio Gallery is a single-page application (SPA) built with vanilla J
     -   Implements an LRU Cache to manage memory.
     -   Implements a Concurrency Limiter to prevent network congestion.
     -   Deduplicates in-flight requests.
+    -   **Priority Queue**: Processes requests based on priority (critical, high, normal).
+    -   **Request Cancellation**: Can cancel pending requests that are no longer needed.
 
-5.  **`touchControls.js` & `fullscreen.js` (Input/Mode)**
+5.  **`loadingStateManager.js` (Loading State UI)**
+    -   Manages loading indicators for images.
+    -   Shows placeholders when assets aren't ready.
+    -   Announces loading states to screen readers.
+    -   Handles timeout and error states.
+
+6.  **`touchControls.js` & `fullscreen.js` (Input/Mode)**
     -   Standalone modules that enhance the UI.
     -   `touchControls` handles swipe/tap gestures.
     -   `fullscreen` handles the Fullscreen API and auto-hiding controls.
@@ -44,8 +52,11 @@ The Modern Audio Gallery is a single-page application (SPA) built with vanilla J
 2.  **Navigation (Next/Prev)**:
     -   User triggers action (Click, Key, Swipe).
     -   `main.js` calls `gallery.next()`.
-    -   `gallery.js` updates index and calls `_preloadNextGroup()`.
+    -   `gallery.js` updates index and calls `_preloadAdjacentGroups()`.
     -   `main.js` calls `updateState()`.
+    -   `updateState()` checks if image is loaded:
+        -   If loaded: Updates DOM immediately
+        -   If not loaded: Shows loading indicator, loads on-demand, then updates DOM
     -   `updateState()` updates DOM (Image src, Caption) and calls `audioPlayer.setTrack()`.
 
 3.  **Audio State**:

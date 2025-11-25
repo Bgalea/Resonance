@@ -24,6 +24,11 @@
     <main class="gallery-container" role="main" aria-label="Image Gallery">
         <div class="image-wrapper">
             <img id="gallery-image" src="" alt="Gallery Image" aria-live="polite">
+            <!-- Loading indicator for images -->
+            <div class="image-loading-overlay" id="image-loading" aria-live="polite" aria-atomic="true" aria-busy="false">
+                <div class="spinner-small"></div>
+                <span class="sr-only">Loading image...</span>
+            </div>
         </div>
 
         <div class="controls-wrapper">
@@ -64,6 +69,7 @@
     <script src="js/assetLoader.js"></script>
     <script src="js/audioPlayer.js"></script>
     <script src="js/gallery.js"></script>
+    <script src="js/loadingStateManager.js"></script>
     <script src="js/touchControls.js"></script>
     <script src="js/fullscreen.js"></script>
     <script src="js/main.js"></script>

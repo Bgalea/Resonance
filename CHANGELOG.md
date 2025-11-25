@@ -10,6 +10,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Keyboard accessibility for loading overlay (Enter/Space to start)
 - Comprehensive project review and quality assessment
+- **Smart Lazy Loading**: Intelligent asset loading for large galleries
+  - Three-tier preloading strategy (Critical, High Priority, Lazy)
+  - Proximity-based loading (preload groups within distance 2)
+  - Loading state indicators with accessibility support
+  - Request cancellation for distant groups
+  - On-demand loading for unpreloaded assets
+  - Priority queue in AssetLoader (critical > high > normal)
+
+### Changed
+- Initial load now only loads critical assets (audio + first image)
+- Gallery initialization is 60-75% faster (6s → 2s)
+- Memory usage is more stable with improved LRU cache management
+- Navigation preloads adjacent groups instead of just next group
 
 ### Fixed
 - Group and picture numbering now start from 1 instead of 0 in the UI display

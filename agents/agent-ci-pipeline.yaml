@@ -1,0 +1,54 @@
+# agent-ci-pipeline.yaml
+# Declarative CI/CD-like pipeline for AI agents
+
+version: 1
+
+stages:
+  - name: "specification"
+    description: "Clarify business value, users, and scope."
+    agents:
+      - id: "product-owner-agent"
+        required: true
+
+  - name: "architecture"
+    description: "Shape solution design and technical approach."
+    agents:
+      - id: "architect-agent"
+        required: true
+
+  - name: "experience-design"
+    description: "Design interactions and look & feel."
+    agents:
+      # These two are 'to be created' agents
+      - id: "ui-designer-agent"
+        required: false
+      - id: "ux-agent"
+        required: false
+
+  - name: "implementation"
+    description: "Implement feature or refactor safely."
+    agents:
+      - id: "senior-dev-agent"
+        required: true
+
+  - name: "quality-gates"
+    description: "Validate quality, risk, and behavior."
+    agents:
+      - id: "test-agent"
+        required: true
+      - id: "security-agent"
+        required: true
+      - id: "performance-agent"
+        required: true
+      - id: "accessibility-agent"
+        required: true
+
+  - name: "documentation"
+    description: "Update docs, release notes, and onboarding material."
+    agents:
+      - id: "docs-agent"
+        required: true
+
+defaults:
+  parallel_quality_gates: true   # test/security/perf/a11y can conceptually run in parallel
+  fail_fast: true                # stop pipeline if a required agent surfaces blocking issues
