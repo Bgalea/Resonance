@@ -116,7 +116,14 @@
             // 2. Check for Tap
             // Must be little movement and short duration
             else if (!isDragging && Math.abs(diffX) < TAP_THRESHOLD && Math.abs(diffY) < TAP_THRESHOLD && timeDiff < LONG_PRESS_DURATION) {
-                if (onTap) onTap();
+                // Check if tap was on an interactive element (button, input, etc.)
+                const target = touch.target;
+                const isInteractive = target.closest('button, input, select, textarea, a, [role="button"]');
+
+                // Only trigger tap handler if NOT tapping on interactive elements
+                if (!isInteractive && onTap) {
+                    onTap();
+                }
             }
         });
     }
