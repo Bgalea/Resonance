@@ -42,12 +42,22 @@ A modern, minimalist, single-page picture gallery web application with synchroni
 -   **Seamless Audio**: Audio continues playing uninterrupted while navigating between images within the same group, and crossfades/switches cleanly when changing groups.
 
 ### UI & Navigation
--   **Intuitive Controls**: Simple "Previous" and "Next" buttons.
+-   **Intuitive Controls**: Centered, easy-to-use "Previous" and "Next" buttons with group and picture counter (1-indexed).
+-   **Fullscreen Mode**: 
+    -   Toggle fullscreen with dedicated button or 'F' key.
+    -   Auto-hiding controls in fullscreen for immersive viewing.
+    -   Exit with Escape key or fullscreen button.
 -   **Touch & Gesture Navigation**:
     -   **Swipe Left/Right**: Navigate between images.
     -   **Tap**: Toggle UI visibility (immersive mode).
     -   **Long Press**: Pause/Resume audio.
--   **Responsive Design**: Fully functional on Desktop, Tablet, and Mobile devices.
+-   **Keyboard Shortcuts**:
+    -   **Arrow Keys**: Navigate left/right.
+    -   **Space**: Play/Pause audio.
+    -   **F**: Toggle fullscreen.
+    -   **M**: Mute/Unmute.
+    -   **Escape**: Exit fullscreen.
+-   **Responsive Design**: Fully functional on Desktop, Tablet, and Mobile devices with centered controls.
 -   **Minimalist Aesthetic**: Clean interface on a black background to focus attention on the content.
 
 ### Performance
@@ -71,9 +81,11 @@ The project follows a clean, modular vanilla JavaScript architecture:
 -   **`js/audioPlayer.js`**: Handles audio playback, volume, looping, and track switching.
 -   **`js/assetLoader.js`**: Manages preloading and caching of images and audio.
 -   **`js/touchControls.js`**: Handles touch gestures (swipe, tap, long-press).
+-   **`js/fullscreen.js`**: Manages fullscreen mode and auto-hiding controls.
 -   **`js/browserCompatibility.js`**: Detects browser features and sets the runtime mode.
 -   **`js/generatedConfig.js`**: Auto-generated file containing the gallery structure (DO NOT EDIT).
--   **`scripts/generateGalleryConfig.mjs`**: Node.js script to generate the config.
+-   **`scripts/generateGalleryConfig.mjs`**: Node.js script to generate the config from folder structure.
+-   **`scripts/reorganize-pictures.js`**: Utility script to reorganize pictures into sound-specific folders based on structure.html mappings.
 
 ---
 
@@ -129,26 +141,6 @@ While client-side protection is never absolute, this project implements "best-ef
     Run the generation script to create `js/generatedConfig.js`:
     ```bash
     node scripts/generateGalleryConfig.mjs
-    ```
-4.  **Run the Application**:
-    Start your local static server pointing to the project root and open `index.html`.
-
----
-
-## 7. Development Workflow
-
-1.  **Modify Code**: Edit files in `js/` or `styles.css`.
-2.  **Update Assets**: Add/remove files in `assets/groups/`.
-3.  **Regenerate Config**: Always run `node scripts/generateGalleryConfig.mjs` after changing assets.
-4.  **Test**:
-    -   **Modern**: Use Chrome/Edge/Firefox.
-    -   **Mobile**: Use Chrome DevTools Device Mode to test touch gestures.
-    -   **Compatibility**: Test degraded mode by simulating missing features or using older browsers.
-
--   **Client-Side Protection**: It is impossible to fully prevent determined users from downloading images that are displayed in the browser.
--   **Autoplay Policies**: Modern browsers may block audio autoplay until the user interacts with the page (click/tap). The "Click to Enter" overlay handles this.
--   **Memory**: Very large galleries (hundreds of high-res images) may impact performance on low-end mobile devices without the "Smart Lazy Loading" feature.
-
 ---
 
 ## 10. Troubleshooting

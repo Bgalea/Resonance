@@ -1,8 +1,35 @@
 # Backlog of Future Features
 
-This document outlines planned features for the Modern Audio Gallery. These items are not yet implemented.
+This document outlines planned and completed features for the Modern Audio Gallery.
+
+## ✅ Completed Features
 
 ------------------------------------------------
+
+### FEATURE 9 – Desktop Hotkeys (Keyboard Shortcuts) ✅ COMPLETED
+
+**Goal:** Improve desktop usability with keyboard navigation.
+
+**User Story:**
+As a desktop user, I want to control the gallery with my keyboard for faster navigation.
+
+**Acceptance Criteria:**
+- [x] Left Arrow: previous picture.
+- [x] Right Arrow: next picture.
+- [x] Space: Play/Pause audio.
+- [x] M: mute/unmute audio.
+- [x] F: toggle fullscreen mode.
+- [x] Escape: exit fullscreen.
+- [x] On desktop browsers, these keys work when the gallery has focus.
+- [x] Shortcuts do not interfere with standard browser behavior when appropriate.
+- [x] Shortcuts are documented in README.
+
+**Status:** ✅ Implemented in current version  
+**Completed:** November 2025
+
+------------------------------------------------
+
+## 📋 Planned Features
 
 ------------------------------------------------
 
@@ -15,36 +42,14 @@ As a user with a slow connection, I want images to load only when I'm about to s
 
 **Acceptance Criteria:**
 - [ ] Keep preloading for current + next group as today.
-- [ ] For additional groups beyond next, use lazy loading (load “just in time” when approaching those groups).
+- [ ] For additional groups beyond next, use lazy loading (load "just in time" when approaching those groups).
 - [ ] Optionally show a small loading placeholder or progress when an image is not yet ready.
 - [ ] App remains responsive even with many groups.
 - [ ] No long initial load when there are many assets.
 - [ ] For distant groups, assets are fetched later, without blocking UI.
 
-**Priority:** MEDIUM/HIGH
+**Priority:** MEDIUM/HIGH  
 **Dependencies:** Existing AssetLoader, galleryConfig, preloading logic.
-
-------------------------------------------------
-
-## FEATURE 9 – Desktop Hotkeys (Keyboard Shortcuts)
-
-**Goal:** Improve desktop usability with keyboard navigation.
-
-**User Story:**
-As a desktop user, I want to control the gallery with my keyboard for faster navigation.
-
-**Acceptance Criteria:**
-- [ ] Left Arrow: previous picture.
-- [ ] Right Arrow: next picture.
-- [ ] Space: Play/Pause slideshow (once slideshow exists).
-- [ ] M: mute/unmute audio.
-- [ ] F: toggle fullscreen mode.
-- [ ] On desktop browsers, these keys work when the gallery has focus.
-- [ ] Shortcuts do not interfere with standard browser behavior when appropriate.
-- [ ] Shortcuts are documented in a small help hint or tooltip.
-
-**Priority:** MEDIUM
-**Dependencies:** Slideshow feature (for Space), fullscreen feature (for F), audio controls (for M).
 
 ------------------------------------------------
 
@@ -63,7 +68,7 @@ As a user on a modern device, I want smooth transitions between images to enhanc
 - [ ] In fallback / degraded modes, navigation still works with no transition and no errors.
 - [ ] Transitions do not cause flicker or break preloading.
 
-**Priority:** MEDIUM
+**Priority:** MEDIUM  
 **Dependencies:** browserCompatibility / mode detection; existing render logic.
 
 ------------------------------------------------
@@ -81,5 +86,5 @@ As a curator, I want to display titles and descriptions for each image/group so 
 - [ ] Support for per-picture `title`, `description`, `tags`.
 - [ ] UI updates to display this information if present.
 
-**Priority:** LOW
+**Priority:** LOW  
 **Dependencies:** Asset structure, UI redesign to accommodate text.

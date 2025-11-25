@@ -172,12 +172,12 @@ document.addEventListener('keydown', (e) => {
         const text = loadingOverlay.querySelector('p');
 
         if (spinner) spinner.style.display = 'none';
-        if (text) text.textContent = "Click to Enter";
+        if (text) text.textContent = "Press Enter or Click to Start";
 
         loadingOverlay.classList.add('ready'); // Add class for cursor pointer
 
-        // Wait for user interaction
-        loadingOverlay.addEventListener('click', () => {
+        // Function to start the gallery
+        const startGallery = () => {
             // Initial Render & Audio Start
             updateState(null);
 
@@ -186,6 +186,19 @@ document.addEventListener('keydown', (e) => {
             setTimeout(() => {
                 loadingOverlay.style.display = 'none';
             }, 500);
+        };
+
+        // Wait for user interaction (click or keyboard)
+        loadingOverlay.addEventListener('click', startGallery, { once: true });
+
+        // Keyboard accessibility: Enter or Space to start
+        loadingOverlay.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+                e.preventDefault();
+                startGallery();
+                // Remove click listener to prevent double-trigger
+                loadingOverlay.removeEventListener('click', startGallery);
+            }
         }, { once: true });
 
     } catch (error) {

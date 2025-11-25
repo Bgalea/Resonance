@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch Chrome",
+            "name": "Launch test",
             "request": "launch",
             "type": "chrome",
             "file": "${workspaceFolder}/test.html",
