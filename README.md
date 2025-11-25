@@ -60,21 +60,6 @@ A modern, minimalist, single-page picture gallery web application with synchroni
     -   **F**: Toggle fullscreen.
     -   **M**: Mute/Unmute.
     -   **Escape**: Exit fullscreen.
--   **Responsive Design**: Fully functional on Desktop, Tablet, and Mobile devices with centered controls.
--   **Minimalist Aesthetic**: Clean interface on a black background to focus attention on the content.
-
-### Performance
--   **AssetLoader**: A dedicated system for intelligent asset fetching with three-tier priority queue.
--   **Caching**: Loaded assets are cached (LRU, max 50 items) to prevent redundant network requests.
--   **Optimized Loading**: Critical assets (audio + first image) loaded before UI appears (< 2 seconds).
--   **Proximity-Based Preloading**: Groups within distance 2 of current position are preloaded.
--   **Scalability**: Supports 50+ groups and 1000+ images without long initial load times.
-
-### Folder-Based Configuration
--   **Structure**: One folder per group under `assets/groups/`.
--   **Content**: Each folder contains images (`.jpg`, `.png`) and an audio file (`.ogg`, `.mp3`).
--   **Automation**: A Node.js script scans these folders and generates `js/generatedConfig.js`.
-
 ### Architecture
 
 The project follows a clean, modular vanilla JavaScript architecture:

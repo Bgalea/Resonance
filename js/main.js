@@ -24,6 +24,9 @@ const fullscreenBtn = document.getElementById('fullscreen-btn');
 // Initialize Loading State Manager
 const loadingStateManager = new LoadingStateManager(assetLoader, imageEl, imageLoadingOverlay);
 
+// Initialize Transition Manager
+const transitionManager = new TransitionManager(galleryConfig);
+
 // SECURITY: Basic Content Protection
 // Prevent right-click context menu on the image
 imageEl.addEventListener('contextmenu', (e) => {
@@ -104,10 +107,11 @@ async function updateState(prevSlide = null) {
         await loadingStateManager.waitForImage(currentSlide.src);
     }
 
-    // 2. Update DOM
-    imageEl.src = currentSlide.src;
+    // 2. Perform transition to new image
+    await transitionManager.transition(imageEl, currentSlide.src);
+
+    // 3. Update DOM
     imageEl.alt = currentSlide.caption; // Accessibility: Add alt text
-    imageEl.classList.add('image-loaded'); // Add fade-in animation
     captionEl.textContent = currentSlide.caption;
     infoEl.textContent = `Group ${currentSlide.groupIndex + 1} – Picture ${currentSlide.imageIndex + 1} of ${currentSlide.groupTotal}`;
 

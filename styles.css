@@ -79,7 +79,17 @@ input:focus:not(:focus-visible) {
     object-fit: contain;
     border-radius: 4px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    transition: opacity 0.3s ease;
+    transition: opacity 400ms ease;
+    /* GPU acceleration for smooth transitions */
+    transform: translateZ(0);
+    will-change: opacity;
+}
+
+/* Respect user preference for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    #gallery-image {
+        transition: none !important;
+    }
 }
 
 /* Hide image if src is empty (initial state) */
@@ -442,6 +452,7 @@ body.fullscreen .controls-wrapper {
     transform: translateY(20px);
     /* Slide down slightly */
 }
+
 /* --- Image Loading Overlay --- */
 
 .image-loading-overlay {
@@ -487,6 +498,7 @@ body.fullscreen .controls-wrapper {
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
