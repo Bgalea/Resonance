@@ -29,6 +29,24 @@ As a desktop user, I want to control the gallery with my keyboard for faster nav
 
 ------------------------------------------------
 
+### BUG FIX – Display Index Starting from 1 ✅ COMPLETED
+
+**Issue:** Group and picture indices were displaying as 0-based (starting from 0) instead of 1-based in the UI.
+
+**User Story:**
+As a user, I want to see "Group 1 – Picture 1 of X" instead of "Group 0 – Picture 0 of X" for better readability.
+
+**Resolution:**
+- [x] Updated display logic in `main.js` to add 1 to both `groupIndex` and `imageIndex`
+- [x] Internal indices remain 0-based (programming standard)
+- [x] Display now shows user-friendly 1-based numbering
+- [x] Updated CHANGELOG.md with fix documentation
+
+**Status:** ✅ Fixed in current version  
+**Completed:** November 2025
+
+------------------------------------------------
+
 ## 📋 Planned Features
 
 ------------------------------------------------

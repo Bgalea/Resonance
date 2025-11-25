@@ -96,7 +96,7 @@ function updateState(prevSlide = null) {
     imageEl.src = currentSlide.src;
     imageEl.alt = currentSlide.caption; // Accessibility: Add alt text
     captionEl.textContent = currentSlide.caption;
-    infoEl.textContent = `Group ${currentSlide.groupIndex} – Picture ${currentSlide.imageIndex} of ${currentSlide.groupTotal}`;
+    infoEl.textContent = `Group ${currentSlide.groupIndex + 1} – Picture ${currentSlide.imageIndex + 1} of ${currentSlide.groupTotal}`;
 
     // 2. Update Buttons
     prevBtn.disabled = !gallery.hasPrevious();

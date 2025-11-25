@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comprehensive project review and quality assessment
 
 ### Fixed
-- Group numbering now starts from 1 instead of 0 (consistent with picture numbering)
+- Group and picture numbering now start from 1 instead of 0 in the UI display
 - Removed production console.log statement
 - Centered UI controls (info area and audio controls) when not in fullscreen mode
 - Removed broken documentation reference to deleted reorganize-pictures.js script
