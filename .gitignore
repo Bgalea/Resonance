@@ -1,0 +1,30 @@
+# Ignore test coverage output
+coverage/
+.nyc_output/
+
+# Ignore Playwright output
+playwright-report/
+test-results/
+
+# Ignore Vitest UI
+.vitest/
+
+# Ignore node modules
+node_modules/
+
+# Ignore package lock (use npm ci in CI)
+package-lock.json
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Ignore logs
+*.log
+npm-debug.log*

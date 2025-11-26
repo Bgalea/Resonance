@@ -19,10 +19,9 @@ stages:
   - name: "experience-design"
     description: "Design interactions and look & feel."
     agents:
-      # These two are 'to be created' agents
-      - id: "ui-designer-agent"
-        required: false
       - id: "ux-agent"
+        required: false
+      - id: "ui-designer-agent"
         required: false
 
   - name: "implementation"
@@ -31,11 +30,25 @@ stages:
       - id: "senior-dev-agent"
         required: true
 
+  - name: "code-review"
+    description: "Review code quality and best practices."
+    agents:
+      - id: "code-review-agent"
+        required: true
+
+  - name: "testing"
+    description: "Comprehensive testing at all levels."
+    agents:
+      - id: "unit-test-agent"
+        required: true
+      - id: "integration-test-agent"
+        required: true
+      - id: "test-agent"
+        required: true
+
   - name: "quality-gates"
     description: "Validate quality, risk, and behavior."
     agents:
-      - id: "test-agent"
-        required: true
       - id: "security-agent"
         required: true
       - id: "performance-agent"
@@ -49,6 +62,26 @@ stages:
       - id: "docs-agent"
         required: true
 
+  - name: "release-preparation"
+    description: "Version management and release notes."
+    agents:
+      - id: "release-manager-agent"
+        required: false
+
+  - name: "deployment-planning"
+    description: "Deployment orchestration and CI/CD configs."
+    agents:
+      - id: "deployment-agent"
+        required: false
+
+  - name: "monitoring-setup"
+    description: "Observability and error tracking."
+    agents:
+      - id: "monitoring-agent"
+        required: false
+
 defaults:
   parallel_quality_gates: true   # test/security/perf/a11y can conceptually run in parallel
+  parallel_testing: true         # unit/integration/e2e can run in parallel where possible
   fail_fast: true                # stop pipeline if a required agent surfaces blocking issues
+

@@ -27,10 +27,11 @@ Please follow this exact agent order:
      - Suggest clean modular boundaries.
 
 3. **Experience Design**
-   - If available, use:
-     - `ui-designer-agent` for visual/UI considerations.
-     - `ux-agent` for flows, interactions, and mobile responsiveness.
-   - If these agents are not defined, explicitly state that this stage is skipped.
+   - Use `ux-agent` for:
+     - User flows, interaction patterns, and usability.
+   - Use `ui-designer-agent` for:
+     - Visual design, design systems, and modern aesthetics.
+   - (If not applicable, skip with a note)
 
 4. **Implementation**
    - Use `senior-dev-agent` to:
@@ -38,10 +39,23 @@ Please follow this exact agent order:
      - Provide patch-style or full file changes.
      - Explain key decisions and any trade-offs.
 
-5. **Quality Gates** (conceptually in parallel)
+5. **Code Review**
+   - Use `code-review-agent` to:
+     - Review code quality, maintainability, and best practices.
+     - Identify critical issues, warnings, and suggestions.
+
+6. **Testing** (conceptually in parallel)
+   - Use `unit-test-agent` to:
+     - Design unit tests for isolated components.
+     - Ensure high code coverage for critical paths.
+   - Use `integration-test-agent` to:
+     - Test component interactions and data flow.
+     - Validate integration points.
    - Use `test-agent` to:
+     - Perform E2E and functional testing.
      - Validate against acceptance criteria.
-     - Propose tests (unit/integration/E2E).
+
+7. **Quality Gates** (conceptually in parallel)
    - Use `security-agent` to:
      - Identify security issues and required mitigations.
    - Use `performance-agent` to:
@@ -49,20 +63,37 @@ Please follow this exact agent order:
    - Use `accessibility-agent` to:
      - Identify a11y issues and suggested fixes.
 
-6. **Documentation**
+8. **Documentation**
    - Use `docs-agent` to:
      - Propose updates to README, BACKLOG, CHANGELOG, and any relevant docs.
      - Summarize how the feature should be communicated to developers/users.
 
-7. **Aggregation**
-   - Finally, call `meta-review-agent` to:
-     - Aggregate all outputs.
-     - Deduplicate overlapping findings.
-     - Prioritize items into:
-       - Blockers
-       - High priority
-       - Medium / later
-     - Produce a clear, actionable action plan.
+9. **Release Preparation**
+   - Use `release-manager-agent` to:
+     - Determine semantic version (MAJOR.MINOR.PATCH).
+     - Generate release notes and changelog entries.
+     - Validate release readiness.
+
+10. **Deployment Planning**
+    - Use `deployment-agent` to:
+      - Create deployment plan and CI/CD configurations.
+      - Define rollback strategy.
+      - Validate environment configurations.
+
+11. **Monitoring Setup**
+    - Use `monitoring-agent` to:
+      - Define monitoring, logging, and alerting strategy.
+      - Set up error tracking and performance monitoring.
+
+12. **Aggregation**
+    - Finally, call `meta-review-agent` to:
+      - Aggregate all outputs.
+      - Deduplicate overlapping findings.
+      - Prioritize items into:
+        - Blockers
+        - High priority
+        - Medium / later
+      - Produce a clear, actionable action plan.
 
 ### Output Format
 
@@ -71,15 +102,23 @@ Please return a single consolidated report with:
 1. Pipeline Summary
 2. Specification Summary (from PO)
 3. Architecture Summary
-4. Experience Design Summary (or “skipped”)
+4. Experience Design Summary (UX + UI)
 5. Implementation Summary + Code Changes
-6. Quality Gates:
-   - Functional/QA
+6. Code Review Summary
+7. Testing Summary:
+   - Unit Testing
+   - Integration Testing
+   - E2E/Functional Testing
+8. Quality Gates:
    - Security
    - Performance
    - Accessibility
-7. Documentation Suggestions
-8. Final Prioritized Action Plan
-   - Immediate (must do now)
-   - Short-term
-   - Longer-term
+9. Documentation Suggestions
+10. Release Summary (version, release notes)
+11. Deployment Plan (CI/CD, environments)
+12. Monitoring Plan (error tracking, metrics)
+13. Final Prioritized Action Plan
+    - Blockers (must fix now)
+    - High Priority (fix before release)
+    - Medium Priority (fix soon)
+    - Low Priority (nice to have)

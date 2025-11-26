@@ -1,0 +1,31 @@
+{
+    "name": "modern-audio-gallery",
+    "version": "2.1.0",
+    "description": "Modern audio-synchronized picture gallery",
+    "type": "module",
+    "scripts": {
+        "test": "node node_modules/vitest/vitest.mjs run",
+        "test:watch": "node node_modules/vitest/vitest.mjs",
+        "test:ui": "node node_modules/vitest/vitest.mjs --ui",
+        "test:coverage": "node node_modules/vitest/vitest.mjs run --coverage",
+        "test:e2e": "playwright test",
+        "test:e2e:ui": "playwright test --ui",
+        "test:all": "npm run test:coverage && npm run test:e2e",
+        "generate-config": "node scripts/generateGalleryConfig.mjs"
+    },
+    "devDependencies": {
+        "@playwright/test": "^1.40.1",
+        "@vitest/coverage-v8": "^1.0.4",
+        "@vitest/ui": "^1.0.4",
+        "happy-dom": "^12.10.3",
+        "vitest": "^1.0.4"
+    },
+    "keywords": [
+        "gallery",
+        "audio",
+        "images",
+        "web-app"
+    ],
+    "author": "",
+    "license": "MIT"
+}

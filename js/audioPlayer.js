@@ -10,11 +10,11 @@ class AudioPlayer {
         this.currentSrc = null;
 
         // Global audio state
-        this.volume = 0.7; // Default volume
-        this.isMuted = false;
+        this.volume = parseFloat(localStorage.getItem('audioVolume')) || 0.7;
+        this.isMuted = localStorage.getItem('audioMuted') === 'true';
 
         // Apply initial state
-        this.audio.volume = this.volume;
+        this._applyVolume();
     }
 
     /**
@@ -54,6 +54,7 @@ class AudioPlayer {
         }
 
         this._applyVolume();
+        localStorage.setItem('audioVolume', this.volume);
     }
 
     /**
@@ -63,12 +64,14 @@ class AudioPlayer {
     setMuted(isMuted) {
         this.isMuted = isMuted;
         this._applyVolume();
+        localStorage.setItem('audioMuted', this.isMuted);
     }
 
     /**
      * Internal helper to apply volume based on mute state.
      */
     _applyVolume() {
+        this.audio.muted = this.isMuted;
         if (this.isMuted) {
             this.audio.volume = 0;
         } else {
@@ -97,4 +100,17 @@ class AudioPlayer {
         this.audio.pause();
         this.audio.currentTime = 0;
     }
+
+    /**
+     * Returns the underlying Audio element.
+     * Useful for testing.
+     */
+    get currentAudio() {
+        return this.audio;
+    }
+}
+
+// Export for ES6 modules (tests) while maintaining global scope for browser
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { AudioPlayer };
 }

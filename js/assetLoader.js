@@ -40,12 +40,12 @@ class AssetLoader {
 
             // Insert based on priority (critical > high > normal)
             const priorityOrder = { critical: 0, high: 1, normal: 2 };
-            const itemPriority = priorityOrder[priority] || 2;
+            const itemPriority = priorityOrder[priority] !== undefined ? priorityOrder[priority] : 2;
 
             // Find insertion point to maintain priority order
             let insertIndex = this.queue.length;
             for (let i = 0; i < this.queue.length; i++) {
-                const queuePriority = priorityOrder[this.queue[i].priority] || 2;
+                const queuePriority = priorityOrder[this.queue[i].priority] !== undefined ? priorityOrder[this.queue[i].priority] : 2;
                 if (itemPriority < queuePriority) {
                     insertIndex = i;
                     break;
@@ -254,4 +254,9 @@ class AssetLoader {
 
         return Promise.all(promises);
     }
+}
+
+// Export for ES6 modules (tests) while maintaining global scope for browser
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { AssetLoader };
 }

@@ -1,0 +1,371 @@
+# full-devops-pipeline.yaml
+# Complete end-to-end DevOps pipeline for AI agents
+# From Product Owner specification to Post-deployment monitoring
+
+version: 2
+
+metadata:
+  name: "Full DevOps Pipeline"
+  description: "Complete SDLC pipeline from specification to production deployment"
+  author: "DevOps Agent Framework"
+  last_updated: "2025-11-26"
+
+# Global configuration
+config:
+  parallel_execution: true      # Allow parallel execution where dependencies permit
+  fail_fast: true               # Stop pipeline if a required agent surfaces blocking issues
+  continue_on_warning: true     # Continue if only warnings are found
+  generate_report: true         # Generate consolidated report at the end
+
+# Pipeline stages
+stages:
+  # ============================================================================
+  # STAGE 1: SPECIFICATION
+  # ============================================================================
+  - name: "specification"
+    description: "Clarify business value, users, scope, and requirements"
+    agents:
+      - id: "product-owner-agent"
+        required: true
+        timeout_minutes: 10
+        outputs:
+          - "user_stories"
+          - "acceptance_criteria"
+          - "priorities"
+          - "dependencies"
+    gates:
+      - type: "approval"
+        condition: "User stories are clear and complete"
+        required: false
+
+  # ============================================================================
+  # STAGE 2: ARCHITECTURE
+  # ============================================================================
+  - name: "architecture"
+    description: "Design technical approach and validate architecture"
+    depends_on: ["specification"]
+    agents:
+      - id: "architect-agent"
+        required: true
+        timeout_minutes: 15
+        outputs:
+          - "architecture_design"
+          - "refactoring_recommendations"
+          - "scalability_guidance"
+    gates:
+      - type: "validation"
+        condition: "Architecture is sound and maintainable"
+        required: true
+
+  # ============================================================================
+  # STAGE 3: EXPERIENCE DESIGN
+  # ============================================================================
+  - name: "experience-design"
+    description: "Design user experience and visual interface"
+    depends_on: ["specification", "architecture"]
+    parallel: true
+    agents:
+      - id: "ux-agent"
+        required: false
+        timeout_minutes: 10
+        outputs:
+          - "user_flows"
+          - "interaction_patterns"
+          - "usability_recommendations"
+      
+      - id: "ui-designer-agent"
+        required: false
+        timeout_minutes: 10
+        outputs:
+          - "design_system"
+          - "visual_design_recommendations"
+          - "ui_components"
+    gates:
+      - type: "review"
+        condition: "UX and UI designs are approved"
+        required: false
+
+  # ============================================================================
+  # STAGE 4: IMPLEMENTATION
+  # ============================================================================
+  - name: "implementation"
+    description: "Implement features, fixes, or refactorings"
+    depends_on: ["architecture", "experience-design"]
+    agents:
+      - id: "senior-dev-agent"
+        required: true
+        timeout_minutes: 30
+        outputs:
+          - "code_changes"
+          - "implementation_notes"
+          - "test_requirements"
+    gates:
+      - type: "validation"
+        condition: "Code compiles and runs without errors"
+        required: true
+
+  # ============================================================================
+  # STAGE 5: CODE REVIEW
+  # ============================================================================
+  - name: "code-review"
+    description: "Review code quality, maintainability, and best practices"
+    depends_on: ["implementation"]
+    agents:
+      - id: "code-review-agent"
+        required: true
+        timeout_minutes: 15
+        outputs:
+          - "code_review_report"
+          - "critical_issues"
+          - "suggestions"
+    gates:
+      - type: "quality-gate"
+        condition: "No critical or high-severity issues"
+        required: true
+        blocking_severities: ["critical", "high"]
+
+  # ============================================================================
+  # STAGE 6: UNIT TESTING
+  # ============================================================================
+  - name: "unit-testing"
+    description: "Design and validate unit tests for isolated components"
+    depends_on: ["code-review"]
+    agents:
+      - id: "unit-test-agent"
+        required: true
+        timeout_minutes: 20
+        outputs:
+          - "unit_test_plan"
+          - "test_specifications"
+          - "coverage_analysis"
+    gates:
+      - type: "coverage"
+        condition: "Unit test coverage >= 80% for critical paths"
+        required: true
+        threshold: 80
+
+  # ============================================================================
+  # STAGE 7: INTEGRATION TESTING
+  # ============================================================================
+  - name: "integration-testing"
+    description: "Test component interactions and data flow"
+    depends_on: ["unit-testing"]
+    agents:
+      - id: "integration-test-agent"
+        required: true
+        timeout_minutes: 20
+        outputs:
+          - "integration_test_plan"
+          - "test_scenarios"
+          - "integration_coverage"
+    gates:
+      - type: "validation"
+        condition: "All critical integration paths are tested"
+        required: true
+
+  # ============================================================================
+  # STAGE 8: END-TO-END TESTING
+  # ============================================================================
+  - name: "e2e-testing"
+    description: "Test complete user workflows and acceptance criteria"
+    depends_on: ["integration-testing"]
+    agents:
+      - id: "test-agent"
+        required: true
+        timeout_minutes: 25
+        outputs:
+          - "e2e_test_results"
+          - "acceptance_validation"
+          - "regression_test_results"
+    gates:
+      - type: "acceptance"
+        condition: "All acceptance criteria are met"
+        required: true
+
+  # ============================================================================
+  # STAGE 9: QUALITY GATES (Parallel)
+  # ============================================================================
+  - name: "quality-gates"
+    description: "Validate security, performance, and accessibility"
+    depends_on: ["e2e-testing"]
+    parallel: true
+    agents:
+      - id: "security-agent"
+        required: true
+        timeout_minutes: 15
+        outputs:
+          - "security_report"
+          - "vulnerabilities"
+          - "mitigations"
+      
+      - id: "performance-agent"
+        required: true
+        timeout_minutes: 15
+        outputs:
+          - "performance_report"
+          - "bottlenecks"
+          - "optimizations"
+      
+      - id: "accessibility-agent"
+        required: true
+        timeout_minutes: 10
+        outputs:
+          - "accessibility_report"
+          - "wcag_compliance"
+          - "a11y_fixes"
+    gates:
+      - type: "quality-gate"
+        condition: "No critical security or accessibility issues"
+        required: true
+        blocking_severities: ["critical"]
+
+  # ============================================================================
+  # STAGE 10: DOCUMENTATION
+  # ============================================================================
+  - name: "documentation"
+    description: "Update documentation, README, changelog"
+    depends_on: ["quality-gates"]
+    agents:
+      - id: "docs-agent"
+        required: true
+        timeout_minutes: 10
+        outputs:
+          - "documentation_updates"
+          - "readme_changes"
+          - "changelog_entries"
+    gates:
+      - type: "validation"
+        condition: "Documentation is complete and accurate"
+        required: true
+
+  # ============================================================================
+  # STAGE 11: RELEASE PREPARATION
+  # ============================================================================
+  - name: "release-preparation"
+    description: "Determine version, generate release notes"
+    depends_on: ["documentation"]
+    agents:
+      - id: "release-manager-agent"
+        required: true
+        timeout_minutes: 10
+        outputs:
+          - "version_number"
+          - "release_notes"
+          - "changelog"
+          - "release_readiness_report"
+    gates:
+      - type: "approval"
+        condition: "Release is approved for deployment"
+        required: true
+        manual_approval: true
+
+  # ============================================================================
+  # STAGE 12: DEPLOYMENT PLANNING
+  # ============================================================================
+  - name: "deployment-planning"
+    description: "Create deployment plan and CI/CD configurations"
+    depends_on: ["release-preparation"]
+    agents:
+      - id: "deployment-agent"
+        required: true
+        timeout_minutes: 15
+        outputs:
+          - "deployment_plan"
+          - "ci_cd_configs"
+          - "environment_configs"
+          - "rollback_plan"
+    gates:
+      - type: "validation"
+        condition: "Deployment plan is complete and tested"
+        required: true
+
+  # ============================================================================
+  # STAGE 13: MONITORING SETUP
+  # ============================================================================
+  - name: "monitoring-setup"
+    description: "Define monitoring, logging, and alerting strategy"
+    depends_on: ["deployment-planning"]
+    agents:
+      - id: "monitoring-agent"
+        required: true
+        timeout_minutes: 10
+        outputs:
+          - "monitoring_plan"
+          - "alerting_rules"
+          - "metrics_definitions"
+          - "dashboard_configs"
+    gates:
+      - type: "validation"
+        condition: "Monitoring is configured and tested"
+        required: true
+
+  # ============================================================================
+  # STAGE 14: META REVIEW & AGGREGATION
+  # ============================================================================
+  - name: "meta-review"
+    description: "Aggregate all findings and create prioritized action plan"
+    depends_on: ["monitoring-setup"]
+    agents:
+      - id: "meta-review-agent"
+        required: true
+        timeout_minutes: 20
+        outputs:
+          - "consolidated_report"
+          - "prioritized_action_plan"
+          - "risk_assessment"
+          - "deployment_recommendation"
+    gates:
+      - type: "final-approval"
+        condition: "All blockers are resolved"
+        required: true
+
+# Output configuration
+outputs:
+  - type: "consolidated_report"
+    format: "markdown"
+    sections:
+      - "Pipeline Summary"
+      - "Specification Summary"
+      - "Architecture Summary"
+      - "Experience Design Summary"
+      - "Implementation Summary"
+      - "Code Review Summary"
+      - "Testing Summary (Unit/Integration/E2E)"
+      - "Quality Gates Summary (Security/Performance/A11y)"
+      - "Documentation Summary"
+      - "Release Summary"
+      - "Deployment Plan"
+      - "Monitoring Plan"
+      - "Final Prioritized Action Plan"
+  
+  - type: "action_plan"
+    format: "markdown"
+    priority_levels:
+      - "Blockers (must fix now)"
+      - "High Priority (fix before release)"
+      - "Medium Priority (fix soon)"
+      - "Low Priority (nice to have)"
+
+# Failure handling
+failure_handling:
+  on_critical_failure:
+    action: "stop_pipeline"
+    notify: true
+    rollback: true
+  
+  on_warning:
+    action: "continue"
+    notify: true
+    log: true
+  
+  on_timeout:
+    action: "skip_agent"
+    notify: true
+    log: true
+
+# Notifications
+notifications:
+  on_start: true
+  on_complete: true
+  on_failure: true
+  on_gate_approval: true

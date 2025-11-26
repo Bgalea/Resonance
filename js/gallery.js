@@ -184,3 +184,8 @@ class Gallery {
         }
     }
 }
+
+// Export for ES6 modules (tests) while maintaining global scope for browser
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { Gallery };
+}
