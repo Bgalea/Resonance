@@ -5,7 +5,8 @@
 class TransitionManager {
     constructor(config = {}) {
         this.type = config.transitionType || 'fade';
-        this.duration = config.transitionDuration || 400;
+        this.duration = config.transitionDuration || 200;
+        //this.duration = config.transitionDuration || 400;
         this.supported = this._detectSupport();
 
         // Check user preference for reduced motion
