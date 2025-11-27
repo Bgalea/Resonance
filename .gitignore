@@ -13,7 +13,7 @@ test-results/
 node_modules/
 
 # Ignore package lock (use npm ci in CI)
-package-lock.json
+# package-lock.json (removed to allow CI to work)
 
 # Ignore OS files
 .DS_Store
