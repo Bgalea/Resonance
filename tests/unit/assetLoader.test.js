@@ -9,16 +9,58 @@ import { AssetLoader } from '../../js/assetLoader.js';
 describe('AssetLoader', () => {
     let loader;
 
+    // Helper to advance timers while loading
+    const loadAsset = async (src, priority) => {
+        const p = loader.preloadImage(src, priority);
+        await vi.advanceTimersByTimeAsync(100);
+        return p;
+    };
+
+    let originalImage;
+    let originalAudio;
+
     beforeEach(() => {
         loader = new AssetLoader({
             maxCacheSize: 5,
             concurrencyLimit: 2
         });
         vi.useFakeTimers();
+
+        // Mock Image
+        originalImage = global.Image;
+        global.Image = class {
+            constructor() {
+                this.onload = null;
+                this.onerror = null;
+                setTimeout(() => {
+                    if (this.onload) this.onload();
+                }, 10);
+            }
+            set src(val) { this._src = val; }
+            get src() { return this._src; }
+        };
+
+        // Mock Audio
+        originalAudio = global.Audio;
+        global.Audio = class {
+            constructor() {
+                this.addEventListener = vi.fn((event, handler) => {
+                    if (event === 'canplaythrough') {
+                        setTimeout(() => handler(), 10);
+                    }
+                });
+                this.removeEventListener = vi.fn();
+                this.load = vi.fn();
+            }
+            set src(val) { this._src = val; }
+            get src() { return this._src; }
+        };
     });
 
     afterEach(() => {
         vi.useRealTimers();
+        global.Image = originalImage;
+        global.Audio = originalAudio;
     });
 
     describe('Initialization', () => {
@@ -36,35 +78,35 @@ describe('AssetLoader', () => {
 
     describe('LRU Cache', () => {
         it('should cache loaded images', async () => {
-            await loader.preloadImage('img1.jpg');
+            await loadAsset('img1.jpg');
             expect(loader.cache.has('img1.jpg')).toBe(true);
         });
 
         it('should evict oldest item when cache is full', async () => {
             // Fill cache to max
             for (let i = 1; i <= 5; i++) {
-                await loader.preloadImage(`img${i}.jpg`);
+                await loadAsset(`img${i}.jpg`);
             }
 
             // Add one more to trigger eviction
-            await loader.preloadImage('img6.jpg');
+            await loadAsset('img6.jpg');
 
             expect(loader.cache.has('img1.jpg')).toBe(false); // Oldest evicted
             expect(loader.cache.has('img6.jpg')).toBe(true);
         });
 
         it('should refresh LRU position on cache hit', async () => {
-            await loader.preloadImage('img1.jpg');
-            await loader.preloadImage('img2.jpg');
-            await loader.preloadImage('img3.jpg');
+            await loadAsset('img1.jpg');
+            await loadAsset('img2.jpg');
+            await loadAsset('img3.jpg');
 
             // Access img1 again to refresh its position
-            await loader.preloadImage('img1.jpg');
+            await loadAsset('img1.jpg');
 
             // Fill cache
-            await loader.preloadImage('img4.jpg');
-            await loader.preloadImage('img5.jpg');
-            await loader.preloadImage('img6.jpg');
+            await loadAsset('img4.jpg');
+            await loadAsset('img5.jpg');
+            await loadAsset('img6.jpg');
 
             // img2 should be evicted (oldest), not img1
             expect(loader.cache.has('img1.jpg')).toBe(true);
@@ -81,9 +123,10 @@ describe('AssetLoader', () => {
         });
 
         it('should return cached result immediately', async () => {
-            await loader.preloadImage('img1.jpg');
+            await loadAsset('img1.jpg');
 
             const start = Date.now();
+            // Cached result returns immediately, so we don't need to advance timers
             await loader.preloadImage('img1.jpg');
             const duration = Date.now() - start;
 
@@ -156,7 +199,8 @@ describe('AssetLoader', () => {
                 promises.push(loader.preloadImage(`img${i}.jpg`));
             }
 
-            await vi.advanceTimersByTimeAsync(200);
+            // 10 requests, concurrency 2, 50ms each = 250ms total
+            await vi.advanceTimersByTimeAsync(300);
             await Promise.all(promises);
 
             expect(maxConcurrent).toBeLessThanOrEqual(2);
@@ -173,7 +217,9 @@ describe('AssetLoader', () => {
                 ]
             };
 
-            await loader.preloadGroupCritical(group, 'critical');
+            const p = loader.preloadGroupCritical(group, 'critical');
+            await vi.advanceTimersByTimeAsync(100);
+            await p;
 
             expect(loader.cache.has('audio.mp3')).toBe(true);
             expect(loader.cache.has('img1.jpg')).toBe(true);
@@ -192,7 +238,9 @@ describe('AssetLoader', () => {
                 ]
             };
 
-            await loader.preloadGroupBackground(group, 'normal');
+            const p = loader.preloadGroupBackground(group, 'normal');
+            await vi.advanceTimersByTimeAsync(100);
+            await p;
 
             expect(loader.cache.has('img1.jpg')).toBe(false); // Skipped
             expect(loader.cache.has('img2.jpg')).toBe(true);
@@ -202,7 +250,7 @@ describe('AssetLoader', () => {
 
     describe('getAssetState()', () => {
         it('should return "loaded" for cached assets', async () => {
-            await loader.preloadImage('img1.jpg');
+            await loadAsset('img1.jpg');
             expect(loader.getAssetState('img1.jpg')).toBe('loaded');
         });
 
@@ -218,6 +266,7 @@ describe('AssetLoader', () => {
 
     describe('cancelPendingRequests()', () => {
         it('should cancel matching requests', async () => {
+            // Don't await these, just queue them
             loader.preloadImage('img1.jpg', 'normal');
             loader.preloadImage('img2.jpg', 'normal');
             loader.preloadImage('img3.jpg', 'critical');

@@ -1,4 +1,4 @@
-# Modern Audio Gallery (AudioFrame)
+#Resonance
 
 A modern, minimalist, single-page picture gallery web application with synchronized audio for each group of pictures. Designed for a seamless, immersive viewing experience with robust preloading and cross-browser compatibility.
 
@@ -20,7 +20,7 @@ A modern, minimalist, single-page picture gallery web application with synchroni
 
 ## 1. Project Overview
 
-**AudioFrame** is an audio-synchronized picture gallery designed to present collections of images where each collection (group) is accompanied by a specific looping soundtrack. It prioritizes a fast, smooth, and preloaded browsing experience, making it ideal for:
+**Resonance** is an audio-synchronized picture gallery designed to present collections of images where each collection (group) is accompanied by a specific looping soundtrack. It prioritizes a fast, smooth, and preloaded browsing experience, making it ideal for:
 
 -   **Art Galleries & Exhibitions**: Digital displays of artwork with ambient sound.
 -   **Portfolios**: Photographers or designers showcasing themed work.

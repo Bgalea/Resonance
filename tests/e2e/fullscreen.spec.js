@@ -8,8 +8,10 @@ import { test, expect } from '@playwright/test';
 test.describe('Fullscreen Mode', () => {
     test.beforeEach(async ({ page }) => {
         await page.goto('/');
+        // Disable animations to prevent Playwright stability timeouts
+        await page.addStyleTag({ content: '*, *::before, *::after { animation: none !important; transition: none !important; }' });
         await page.click('#loading-overlay');
-        await page.waitForTimeout(500);
+        await page.waitForTimeout(1000);
     });
 
     test('should have fullscreen button visible', async ({ page }) => {

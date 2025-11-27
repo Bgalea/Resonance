@@ -10,7 +10,8 @@ class AudioPlayer {
         this.currentSrc = null;
 
         // Global audio state
-        this.volume = parseFloat(localStorage.getItem('audioVolume')) || 0.7;
+        const storedVolume = localStorage.getItem('audioVolume');
+        this.volume = storedVolume !== null ? parseFloat(storedVolume) : 0.7;
         this.isMuted = localStorage.getItem('audioMuted') === 'true';
 
         // Apply initial state
