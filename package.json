@@ -1,15 +1,15 @@
 {
     "name": "modern-audio-gallery",
-    "version": "1.0.0",
+    "version": "1.2.0",
     "description": "Modern audio-synchronized picture gallery",
     "type": "module",
     "scripts": {
-        "test": "node node_modules/vitest/vitest.mjs run",
-        "test:watch": "node node_modules/vitest/vitest.mjs",
-        "test:ui": "node node_modules/vitest/vitest.mjs --ui",
-        "test:coverage": "node node_modules/vitest/vitest.mjs run --coverage",
-        "test:e2e": "playwright test",
-        "test:e2e:ui": "playwright test --ui",
+        "test": "node node_modules/vitest/vitest.mjs run -c tests/config/vitest.config.js",
+        "test:watch": "node node_modules/vitest/vitest.mjs -c tests/config/vitest.config.js",
+        "test:ui": "node node_modules/vitest/vitest.mjs --ui -c tests/config/vitest.config.js",
+        "test:coverage": "node node_modules/vitest/vitest.mjs run --coverage -c tests/config/vitest.config.js",
+        "test:e2e": "playwright test -c tests/config/playwright.config.js",
+        "test:e2e:ui": "playwright test --ui -c tests/config/playwright.config.js",
         "test:all": "npm run test:coverage && npm run test:e2e",
         "generate-config": "node scripts/generateGalleryConfig.mjs"
     },
@@ -26,6 +26,6 @@
         "images",
         "web-app"
     ],
-    "author": "",
+    "author": "Baptiste Galea",
     "license": "MIT"
 }

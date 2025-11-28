@@ -7,7 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2025-11-28
+
 ### Added
+- **Project Structure Refactoring**: Organized testing infrastructure
+  - Created `tests/config/` directory for test configurations
+  - Created `tests/scripts/` directory for test helper scripts
+  - Created `tests/manual/` directory for manual testing files
+  - Created `tests/reports/` directory for test output
 - Keyboard accessibility for loading overlay (Enter/Space to start)
 - Comprehensive project review and quality assessment
 - **Smart Lazy Loading**: Intelligent asset loading for large galleries
@@ -24,6 +31,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - GPU-accelerated for 60fps performance
 
 ### Changed
+- **Test Infrastructure**: Reorganized all test-related files into `tests/` directory
+  - Moved `playwright.config.js` and `vitest.config.js` to `tests/config/`
+  - Moved `run-tests.bat` to `tests/scripts/`
+  - Moved `test.html` to `tests/manual/`
+  - Updated all test commands in `package.json` to reference new locations
+  - Configured test reports to output to `tests/reports/`
 - Initial load now only loads critical assets (audio + first image)
 - Gallery initialization is 60-75% faster (6s → 2s)
 - Memory usage is more stable with improved LRU cache management
@@ -34,6 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed production console.log statement
 - Centered UI controls (info area and audio controls) when not in fullscreen mode
 - Removed broken documentation reference to deleted reorganize-pictures.js script
+- Fixed `playwright.config.js` webServer to serve from project root (not config directory)
 
 ## [1.1.0] - 2025-11-24
 
@@ -122,6 +136,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History Summary
 
+- **v1.2.0** (2025-11-28): Project structure refactoring, test infrastructure improvements
 - **v1.1.0** (2025-11-24): Fullscreen mode, keyboard shortcuts, touch controls, UI improvements
 - **v1.0.0** (2025-11-20): Initial release with core gallery functionality
 

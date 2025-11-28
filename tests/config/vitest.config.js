@@ -9,6 +9,7 @@ export default defineConfig({
         coverage: {
             provider: 'v8',
             reporter: ['text', 'json', 'html'],
+            reportsDirectory: 'tests/reports/coverage',
             include: ['js/**/*.js'],
             exclude: [
                 'js/generatedConfig.js',
@@ -27,6 +28,6 @@ export default defineConfig({
                 statements: 80
             }
         },
-        setupFiles: ['./tests/setup.js']
+        setupFiles: ['tests/setup.js']
     }
 });
