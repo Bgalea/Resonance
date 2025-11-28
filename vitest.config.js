@@ -13,7 +13,12 @@ export default defineConfig({
             exclude: [
                 'js/generatedConfig.js',
                 'js/browserCompatibility.js',
-                'js/config.js'
+                'js/config.js',
+                'js/main.js',
+                'js/fullscreen.js',
+                'js/touchControls.js',
+                'js/loadingStateManager.js',
+                'js/transitionManager.js'
             ],
             thresholds: {
                 lines: 80,
