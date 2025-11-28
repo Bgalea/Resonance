@@ -19,14 +19,13 @@ test.describe('Audio Controls', () => {
         await page.waitForTimeout(1000);
     });
 
+
     test('should have audio controls visible', async ({ page, browserName }) => {
-        if (browserName === 'webkit') test.skip();
         const controls = page.locator('.audio-controls');
         await expect(controls).toBeVisible();
     });
 
     test('should mute and unmute audio', async ({ page, browserName }) => {
-        if (browserName === 'webkit') test.skip();
         const muteBtn = page.locator('#mute-btn');
 
         // Initial state: unmuted (aria-pressed="false")
@@ -42,7 +41,6 @@ test.describe('Audio Controls', () => {
     });
 
     test('should adjust volume with slider', async ({ page, browserName }) => {
-        if (browserName === 'webkit') test.skip();
         const volumeSlider = page.locator('#volume-slider');
 
         // Set volume
@@ -56,7 +54,6 @@ test.describe('Audio Controls', () => {
     });
 
     test('should persist volume across page reloads', async ({ page, browserName }) => {
-        if (browserName === 'webkit') test.skip();
         test.setTimeout(60000); // Increase timeout for Firefox reload
 
         const volumeSlider = page.locator('#volume-slider');
@@ -66,6 +63,9 @@ test.describe('Audio Controls', () => {
             el.value = '0.8';
             el.dispatchEvent(new Event('input', { bubbles: true }));
         });
+
+        // Wait for event to process and localStorage to save
+        await page.waitForTimeout(500);
 
         // Reload page
         await page.reload();
@@ -77,7 +77,6 @@ test.describe('Audio Controls', () => {
     });
 
     test('should persist mute state across page reloads', async ({ page, browserName }) => {
-        if (browserName === 'webkit') test.skip();
         test.setTimeout(60000); // Increase timeout for Firefox reload
 
         const muteBtn = page.locator('#mute-btn');
@@ -95,7 +94,6 @@ test.describe('Audio Controls', () => {
     });
 
     test('should have accessible labels', async ({ page, browserName }) => {
-        if (browserName === 'webkit') test.skip();
         const muteBtn = page.locator('#mute-btn');
         const volumeSlider = page.locator('#volume-slider');
 

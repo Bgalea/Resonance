@@ -30,7 +30,7 @@ function generateConfig() {
 
         const files = fs.readdirSync(folderPath).sort();
         const images = [];
-        let audioSrc = null;
+        const audioSources = [];
 
         for (const file of files) {
             const ext = path.extname(file).toLowerCase();
@@ -43,16 +43,14 @@ function generateConfig() {
                     caption: file // Use filename as caption for now
                 });
             } else if (AUDIO_EXTENSIONS.includes(ext)) {
-                if (!audioSrc) {
-                    audioSrc = filePath;
-                }
+                audioSources.push(filePath);
             }
         }
 
         if (images.length > 0) {
             groups.push({
                 id: folder,
-                audioSrc: audioSrc,
+                audioSources: audioSources, // Changed from audioSrc to audioSources array
                 images: images
             });
         }

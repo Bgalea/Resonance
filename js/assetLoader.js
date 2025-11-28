@@ -217,7 +217,25 @@ class AssetLoader {
         const promises = [];
 
         // 1. Audio is critical for the experience
-        if (group.audioSrc) {
+        if (group.audioSources && group.audioSources.length > 0) {
+            // Use helper to find best supported format
+            // Note: In tests/node environment, this might return null if Audio is not fully mocked with canPlayType
+            // We'll handle that by falling back to the first source if needed
+            let audioSrc = null;
+
+            // Dynamic import for browser environment, or use global if available
+            if (typeof window !== 'undefined' && window.getSupportedAudioSource) {
+                audioSrc = window.getSupportedAudioSource(group.audioSources);
+            } else {
+                // Fallback for tests or if helper not loaded yet
+                audioSrc = group.audioSources[0];
+            }
+
+            if (audioSrc) {
+                promises.push(this.preloadAudio(audioSrc, priority));
+            }
+        } else if (group.audioSrc) {
+            // Backward compatibility
             promises.push(this.preloadAudio(group.audioSrc, priority));
         }
 

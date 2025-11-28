@@ -16,22 +16,7 @@ const infoEl = document.getElementById('gallery-info');
 const prevBtn = document.getElementById('prev-btn');
 const nextBtn = document.getElementById('next-btn');
 const muteBtn = document.getElementById('mute-btn');
-const volumeSlider = document.getElementById('volume-slider');
-const loadingOverlay = document.getElementById('loading-overlay');
-const imageLoadingOverlay = document.getElementById('image-loading');
-const fullscreenBtn = document.getElementById('fullscreen-btn');
-
-// Initialize Loading State Manager
-const loadingStateManager = new LoadingStateManager(assetLoader, imageEl, imageLoadingOverlay);
-
-// Initialize Transition Manager
-const transitionManager = new TransitionManager(galleryConfig);
-
-// SECURITY: Basic Content Protection
-// Prevent right-click context menu on the image
-imageEl.addEventListener('contextmenu', (e) => {
-    e.preventDefault();
-    return false;
+return false;
 });
 
 // Prevent dragging the image
@@ -121,7 +106,17 @@ async function updateState(prevSlide = null) {
 
     // 4. Handle Audio
     if (!prevSlide || gallery.isNewGroup(prevSlide, currentSlide)) {
-        audioPlayer.setTrack(currentSlide.audioSrc);
+        // Update Audio
+        const currentGroup = gallery.getCurrentGroup();
+        if (currentGroup) {
+            let audioSrc = null;
+            if (currentGroup.audioSources) {
+                audioSrc = getSupportedAudioSource(currentGroup.audioSources);
+            } else {
+                audioSrc = currentGroup.audioSrc; // Backward compatibility
+            }
+            audioPlayer.setTrack(audioSrc);
+        }
     }
 }
 
