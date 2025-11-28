@@ -4,7 +4,7 @@
  */
 
 // Initialize components
-// Assumes galleryConfig, Gallery, and AudioPlayer are available in global scope
+// Assumes galleryConfig, Gallery, AudioPlayer, and getSupportedAudioSource are available in global scope
 const assetLoader = new AssetLoader();
 const gallery = new Gallery(galleryConfig, assetLoader);
 const audioPlayer = new AudioPlayer();
@@ -16,7 +16,22 @@ const infoEl = document.getElementById('gallery-info');
 const prevBtn = document.getElementById('prev-btn');
 const nextBtn = document.getElementById('next-btn');
 const muteBtn = document.getElementById('mute-btn');
-return false;
+const volumeSlider = document.getElementById('volume-slider');
+const loadingOverlay = document.getElementById('loading-overlay');
+const imageLoadingOverlay = document.getElementById('image-loading');
+const fullscreenBtn = document.getElementById('fullscreen-btn');
+
+// Initialize Loading State Manager
+const loadingStateManager = new LoadingStateManager(assetLoader, imageEl, imageLoadingOverlay);
+
+// Initialize Transition Manager
+const transitionManager = new TransitionManager(galleryConfig);
+
+// SECURITY: Basic Content Protection
+// Prevent right-click context menu on the image
+imageEl.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    return false;
 });
 
 // Prevent dragging the image
@@ -106,8 +121,8 @@ async function updateState(prevSlide = null) {
 
     // 4. Handle Audio
     if (!prevSlide || gallery.isNewGroup(prevSlide, currentSlide)) {
-        // Update Audio
-        const currentGroup = gallery.getCurrentGroup();
+        // Update Audio - get group from config using current slide's groupIndex
+        const currentGroup = gallery.config.groups[currentSlide.groupIndex];
         if (currentGroup) {
             let audioSrc = null;
             if (currentGroup.audioSources) {

@@ -19,7 +19,7 @@ function canPlayType(mimeType) {
  * @param {string[]} sources - Array of audio file URLs.
  * @returns {string|null} - The best supported source URL, or null if none supported.
  */
-export function getSupportedAudioSource(sources) {
+function getSupportedAudioSource(sources) {
     if (!sources || sources.length === 0) return null;
 
     // Map extensions to MIME types
@@ -49,4 +49,9 @@ export function getSupportedAudioSource(sources) {
 
     // 4. Fallback: Return the first source if nothing else matched (browser might still play it)
     return sources[0];
+}
+
+// Export for ES6 modules (tests) while maintaining global scope for browser
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { getSupportedAudioSource };
 }
