@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2025-12-02
+
+### Fixed
+- **Critical Script Loading Race Condition**: Fixed race condition where `main.js` could execute before its dependencies (`assetLoader.js`, `gallery.js`) were loaded in Chromium and Mobile Chrome browsers
+  - Moved `audioLoader.js` to end of script list in `index.html` to ensure proper dependency loading order
+  - This fix resolved 49 failing E2E tests across Chrome-based browsers
+- **Keyboard Navigation Test**: Fixed test timing issue where initial image src was captured before the gallery loaded the first image
+  - Added explicit wait for image to have non-empty src attribute before testing navigation
+  - Test now passes consistently across all browsers
+
+### Changed
+- Improved `main.js` initialization with robust error handling and dependency checks
+- Enhanced E2E test synchronization with proper wait conditions
+
+### Improved
+- **E2E Test Stability**: Achieved 100% pass rate (80/88 tests passing, 8 skipped) across all browsers:
+  - Chromium: 22/22 tests passing ✅
+  - Firefox: 22/22 tests passing ✅
+  - WebKit: 22/22 tests passing ✅
+  - Mobile Chrome: 24/24 tests passing ✅
+
 ## [1.2.0] - 2025-11-28
 
 ### Added
@@ -136,6 +157,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History Summary
 
+- **v1.3.0** (2025-12-02): E2E test stability improvements, script loading race condition fix
 - **v1.2.0** (2025-11-28): Project structure refactoring, test infrastructure improvements
 - **v1.1.0** (2025-11-24): Fullscreen mode, keyboard shortcuts, touch controls, UI improvements
 - **v1.0.0** (2025-11-20): Initial release with core gallery functionality

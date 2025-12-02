@@ -15,8 +15,12 @@ test.describe('Audio Controls', () => {
         page.on('console', msg => console.log(`BROWSER LOG: ${msg.text()}`));
         page.on('pageerror', err => console.log(`BROWSER ERROR: ${err.message}`));
         await page.evaluate(() => localStorage.clear());
-        await page.click('#loading-overlay');
-        await page.waitForTimeout(1000);
+        const loadingOverlay = page.locator('#loading-overlay');
+        // Wait for event listeners to be attached
+        await loadingOverlay.waitFor({ state: 'attached' });
+        await expect(loadingOverlay).toHaveAttribute('data-ready', 'true', { timeout: 10000 });
+        await loadingOverlay.click();
+        await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 2000 });
     });
 
 
@@ -69,8 +73,11 @@ test.describe('Audio Controls', () => {
 
         // Reload page
         await page.reload();
-        await page.click('#loading-overlay');
-        await page.waitForTimeout(1000);
+        const loadingOverlay = page.locator('#loading-overlay');
+        await loadingOverlay.waitFor({ state: 'attached' });
+        await expect(loadingOverlay).toHaveAttribute('data-ready', 'true', { timeout: 10000 });
+        await loadingOverlay.click();
+        await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 2000 });
 
         // Check persistence
         await expect(volumeSlider).toHaveValue('0.8');
@@ -86,8 +93,11 @@ test.describe('Audio Controls', () => {
 
         // Reload page
         await page.reload();
-        await page.click('#loading-overlay');
-        await page.waitForTimeout(1000);
+        const loadingOverlay = page.locator('#loading-overlay');
+        await loadingOverlay.waitFor({ state: 'attached' });
+        await expect(loadingOverlay).toHaveAttribute('data-ready', 'true', { timeout: 10000 });
+        await loadingOverlay.click();
+        await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 2000 });
 
         // Check persistence
         await expect(muteBtn).toHaveAttribute('aria-pressed', 'true');

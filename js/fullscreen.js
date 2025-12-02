@@ -22,7 +22,7 @@
         var onExit = options.onExit;
 
         var hideTimer = null;
-        var HIDE_DELAY = 3000; // 3 seconds
+        var HIDE_DELAY = options.hideDelay || 3000; // Configurable, default 3 seconds
 
         // Check for Fullscreen API support
         var isSupported = document.fullscreenEnabled ||

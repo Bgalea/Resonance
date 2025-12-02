@@ -1,6 +1,6 @@
 {
     "name": "modern-audio-gallery",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "description": "Modern audio-synchronized picture gallery",
     "type": "module",
     "scripts": {

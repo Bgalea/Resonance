@@ -3,11 +3,33 @@
  * Wires up the Gallery, AudioPlayer, and DOM.
  */
 
-// Initialize components
-// Assumes galleryConfig, Gallery, AudioPlayer, and getSupportedAudioSource are available in global scope
-const assetLoader = new AssetLoader();
-const gallery = new Gallery(galleryConfig, assetLoader);
-const audioPlayer = new AudioPlayer();
+// Initialize components with settings from galleryConfig
+// AssetLoader with performance settings
+let assetLoader, gallery, audioPlayer;
+
+try {
+    console.log('Main.js: Initializing dependencies...');
+    if (typeof AssetLoader === 'undefined') throw new Error('AssetLoader is not defined');
+    if (typeof Gallery === 'undefined') throw new Error('Gallery is not defined');
+    if (typeof galleryConfig === 'undefined') throw new Error('galleryConfig is not defined');
+
+    assetLoader = new AssetLoader({
+        maxCacheSize: galleryConfig.performance?.maxCacheSize,
+        concurrencyLimit: galleryConfig.performance?.concurrencyLimit
+    });
+
+    gallery = new Gallery(galleryConfig, assetLoader);
+
+    // Conditional audio player initialization
+    // --- Audio Control Logic ---
+    audioPlayer = (galleryConfig.enableSound && window.AudioPlayer) ? new AudioPlayer() : null;
+
+    if (galleryConfig.enableSound && !audioPlayer) {
+        console.warn('Audio enabled in config but AudioPlayer class not found');
+    }
+} catch (e) {
+    console.error('Main.js: Critical initialization error:', e);
+}
 
 // DOM Elements
 const imageEl = document.getElementById('gallery-image');
@@ -24,8 +46,11 @@ const fullscreenBtn = document.getElementById('fullscreen-btn');
 // Initialize Loading State Manager
 const loadingStateManager = new LoadingStateManager(assetLoader, imageEl, imageLoadingOverlay);
 
-// Initialize Transition Manager
-const transitionManager = new TransitionManager(galleryConfig);
+// Initialize Transition Manager with settings
+const transitionManager = new TransitionManager({
+    transitionType: galleryConfig.transitions?.type,
+    transitionDuration: galleryConfig.transitions?.duration || galleryConfig.timing?.transitionDuration
+});
 
 // SECURITY: Basic Content Protection
 // Prevent right-click context menu on the image
@@ -60,9 +85,25 @@ function navigatePrev() {
     return false;
 }
 
+// === DYNAMIC UI TEXT INJECTION ===
+// Set page title from config
+if (galleryConfig.ui?.pageTitle) {
+    document.title = galleryConfig.ui.pageTitle;
+}
+
+// Set button labels from config
+if (galleryConfig.ui?.buttonLabels) {
+    if (prevBtn) prevBtn.textContent = galleryConfig.ui.buttonLabels.previous || 'Previous';
+    if (nextBtn) nextBtn.textContent = galleryConfig.ui.buttonLabels.next || 'Next';
+}
+
+// NOTE: Loading messages are set dynamically after gallery.init() completes
+// See initialization code below (line ~234)
+
 // --- Audio Control Logic ---
 
 function updateAudioUI() {
+    if (!audioPlayer) return; // Skip if audio disabled
     // Update Mute Button
     muteBtn.textContent = audioPlayer.isMuted ? '🔇' : '🔊';
     muteBtn.setAttribute('aria-label', audioPlayer.isMuted ? 'Unmute Audio' : 'Mute Audio');
@@ -75,21 +116,24 @@ function updateAudioUI() {
     volumeSlider.setAttribute('aria-valuenow', audioPlayer.volume);
 }
 
-muteBtn.addEventListener('click', () => {
-    audioPlayer.setMuted(!audioPlayer.isMuted);
-    updateAudioUI();
-});
+// Only set up audio controls if audio is enabled
+if (audioPlayer && muteBtn && volumeSlider) {
+    muteBtn.addEventListener('click', () => {
+        audioPlayer.setMuted(!audioPlayer.isMuted);
+        updateAudioUI();
+    });
 
-volumeSlider.addEventListener('input', (e) => {
-    const val = parseFloat(e.target.value);
-    // Clamp just in case
-    const newVolume = Math.max(0, Math.min(1, val));
-    audioPlayer.setVolume(newVolume);
-    updateAudioUI();
-});
+    volumeSlider.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value);
+        // Clamp just in case
+        const newVolume = Math.max(0, Math.min(1, val));
+        audioPlayer.setVolume(newVolume);
+        updateAudioUI();
+    });
 
-// Initialize Audio UI
-updateAudioUI();
+    // Initialize Audio UI
+    updateAudioUI();
+}
 
 /**
  * Updates the UI to reflect the current slide state.
@@ -119,11 +163,11 @@ async function updateState(prevSlide = null) {
     prevBtn.disabled = !gallery.hasPrevious();
     nextBtn.disabled = !gallery.hasNext();
 
-    // 4. Handle Audio
-    if (!prevSlide || gallery.isNewGroup(prevSlide, currentSlide)) {
+    // 4. Handle Audio (only if enabled)
+    if (audioPlayer && (!prevSlide || gallery.isNewGroup(prevSlide, currentSlide))) {
         // Update Audio - get group from config using current slide's groupIndex
         const currentGroup = gallery.config.groups[currentSlide.groupIndex];
-        if (currentGroup) {
+        if (currentGroup && window.getSupportedAudioSource) {
             let audioSrc = null;
             if (currentGroup.audioSources) {
                 audioSrc = getSupportedAudioSource(currentGroup.audioSources);
@@ -158,10 +202,12 @@ document.addEventListener('keydown', (e) => {
         case ' ':
         case 'Spacebar': // Older browsers
             e.preventDefault();
-            if (audioPlayer.audio.paused) {
-                audioPlayer.play();
-            } else {
-                audioPlayer.audio.pause();
+            if (audioPlayer && audioPlayer.audio) {
+                if (audioPlayer.audio.paused) {
+                    audioPlayer.play();
+                } else {
+                    audioPlayer.audio.pause();
+                }
             }
             break;
         case 'f':
@@ -172,7 +218,7 @@ document.addEventListener('keydown', (e) => {
             break;
         case 'm':
         case 'M':
-            muteBtn.click();
+            if (muteBtn) muteBtn.click();
             break;
         case 'Escape':
             // Exit fullscreen if active
@@ -190,25 +236,33 @@ document.addEventListener('keydown', (e) => {
 // Initialize Application
 (async () => {
     try {
-        // Start preloading
-        await gallery.init();
+        // Start preloading (don't await - let it happen in background)
+        const initPromise = gallery.init();
 
-        // Change loading screen to "Click to Enter"
+        // Change loading screen to "Click to Enter" immediately
         const spinner = loadingOverlay.querySelector('.spinner');
         const text = loadingOverlay.querySelector('p');
 
         if (spinner) spinner.style.display = 'none';
-        if (text) text.textContent = "Press Enter or Click to Start";
+        if (text) {
+            // Use configured message or default
+            text.textContent = galleryConfig.ui?.messages?.startPrompt || "Press Enter or Click to Start";
+        }
 
         loadingOverlay.classList.add('ready'); // Add class for cursor pointer
 
         // Function to start the gallery
-        const startGallery = () => {
-            // Initial Render & Audio Start
-            updateState(null);
+        const startGallery = async () => {
+            // Wait for init to complete before starting
+            await initPromise;
 
-            // Hide loading overlay
+            // Hide loading overlay FIRST (synchronously)
             loadingOverlay.classList.add('hidden');
+
+            // Initial Render & Audio Start
+            await updateState(null);
+
+            // Remove from DOM after transition
             setTimeout(() => {
                 loadingOverlay.style.display = 'none';
             }, 500);
@@ -227,6 +281,12 @@ document.addEventListener('keydown', (e) => {
             }
         }, { once: true });
 
+        // Signal that event listeners are ready (for E2E tests)
+        // Set this IMMEDIATELY, not after init completes
+        if (loadingOverlay) {
+            loadingOverlay.setAttribute('data-ready', 'true');
+        }
+
     } catch (error) {
         console.error("Failed to initialize gallery:", error);
         // SECURITY: Use textContent to prevent XSS
@@ -234,10 +294,13 @@ document.addEventListener('keydown', (e) => {
     }
 })();
 
-// Initialize Touch Controls
+// Initialize Touch Controls with settings
 if (window.initTouchControls) {
     initTouchControls({
         containerEl: document.querySelector('.gallery-container'),
+        swipeThreshold: galleryConfig.touch?.swipeThreshold,
+        tapThreshold: galleryConfig.touch?.tapThreshold,
+        longPressDuration: galleryConfig.timing?.longPressDuration,
         onSwipeLeft: navigateNext,  // Use extracted function
         onSwipeRight: navigatePrev, // Use extracted function
         onTap: () => {
@@ -248,22 +311,25 @@ if (window.initTouchControls) {
             }
         },
         onLongPress: () => {
-            // Toggle Audio Play/Pause
-            if (audioPlayer.audio.paused) {
-                audioPlayer.play();
-            } else {
-                audioPlayer.audio.pause();
+            // Toggle Audio Play/Pause (only if audio enabled)
+            if (audioPlayer && audioPlayer.audio) {
+                if (audioPlayer.audio.paused) {
+                    audioPlayer.play();
+                } else {
+                    audioPlayer.audio.pause();
+                }
             }
         }
     });
 }
 
-// Initialize Fullscreen Mode
+// Initialize Fullscreen Mode with settings
 if (window.initFullscreen) {
     initFullscreen({
         rootEl: document.documentElement,
         controlsEl: document.querySelector('.controls-wrapper'),
         fullscreenButtonEl: document.getElementById('fullscreen-btn'),
+        hideDelay: galleryConfig.timing?.fullscreenControlsHideDelay,
         onEnter: () => {
             document.body.classList.add('fullscreen');
         },

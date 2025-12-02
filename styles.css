@@ -507,3 +507,8 @@ body.fullscreen .controls-wrapper {
 .image-loaded {
     animation: fadeIn 0.3s ease-in;
 }
+/* === Sound Disabled Mode === */
+/* Hide audio controls when sound is disabled */
+body.sound-disabled .audio-controls {
+    display: none;
+}

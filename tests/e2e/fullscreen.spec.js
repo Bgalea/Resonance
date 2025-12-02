@@ -10,8 +10,12 @@ test.describe('Fullscreen Mode', () => {
         await page.goto('/');
         // Disable animations to prevent Playwright stability timeouts
         await page.addStyleTag({ content: '*, *::before, *::after { animation: none !important; transition: none !important; }' });
-        await page.click('#loading-overlay');
-        await page.waitForTimeout(1000);
+        const loadingOverlay = page.locator('#loading-overlay');
+        // Wait for event listeners to be attached
+        await loadingOverlay.waitFor({ state: 'attached' });
+        await expect(loadingOverlay).toHaveAttribute('data-ready', 'true', { timeout: 10000 });
+        await loadingOverlay.click();
+        await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 2000 });
     });
 
     test('should have fullscreen button visible', async ({ page }) => {

@@ -1,0 +1,33 @@
+{
+    "enableSound": true,
+    "ui": {
+        "pageTitle": "Resonance",
+        "buttonLabels": {
+            "previous": "Previous",
+            "next": "Next"
+        },
+        "messages": {
+            "startPrompt": "Press Enter or Click to Start",
+            "loading": "Loading..."
+        }
+    },
+    "timing": {
+        "transitionDuration": 200,
+        "fullscreenControlsHideDelay": 3000,
+        "longPressDuration": 800,
+        "loadingOverlayFadeDuration": 500
+    },
+    "touch": {
+        "swipeThreshold": 50,
+        "tapThreshold": 10,
+        "swipeVerticalTolerance": 100
+    },
+    "performance": {
+        "maxCacheSize": 50,
+        "concurrencyLimit": 6
+    },
+    "transitions": {
+        "type": "fade",
+        "duration": 200
+    }
+}

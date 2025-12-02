@@ -111,7 +111,12 @@ class AudioPlayer {
     }
 }
 
-// Export for ES6 modules (tests) while maintaining global scope for browser
+// Export for ES6 modules (tests)
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { AudioPlayer };
+}
+
+// Always assign to window for browser usage
+if (typeof window !== 'undefined') {
+    window.AudioPlayer = AudioPlayer;
 }

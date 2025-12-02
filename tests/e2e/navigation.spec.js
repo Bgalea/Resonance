@@ -17,11 +17,15 @@ test.describe('Gallery Navigation', () => {
         const loadingOverlay = page.locator('#loading-overlay');
         await expect(loadingOverlay).toBeVisible();
 
+        // Wait for event listeners to be attached
+        await loadingOverlay.waitFor({ state: 'attached' });
+        await expect(loadingOverlay).toHaveAttribute('data-ready', 'true', { timeout: 10000 });
+
         // Click to start
         await loadingOverlay.click();
 
-        // Loading overlay should disappear
-        await expect(loadingOverlay).toHaveClass(/hidden/);
+        // Wait for loading overlay to disappear
+        await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 2000 });
 
         // First image should be visible
         const galleryImage = page.locator('#gallery-image');
@@ -30,8 +34,11 @@ test.describe('Gallery Navigation', () => {
     });
 
     test('should navigate to next image', async ({ page }) => {
-        await page.click('#loading-overlay');
-        await page.waitForTimeout(1000);
+        const loadingOverlay = page.locator('#loading-overlay');
+        await loadingOverlay.waitFor({ state: 'attached' });
+        await expect(loadingOverlay).toHaveAttribute('data-ready', 'true', { timeout: 10000 });
+        await loadingOverlay.click();
+        await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 2000 });
 
         // Get initial image src
         const initialSrc = await page.locator('#gallery-image').getAttribute('src');
@@ -45,8 +52,11 @@ test.describe('Gallery Navigation', () => {
     });
 
     test('should navigate to previous image', async ({ page }) => {
-        await page.click('#loading-overlay');
-        await page.waitForTimeout(1000);
+        const loadingOverlay = page.locator('#loading-overlay');
+        await loadingOverlay.waitFor({ state: 'attached' });
+        await expect(loadingOverlay).toHaveAttribute('data-ready', 'true', { timeout: 10000 });
+        await loadingOverlay.click();
+        await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 2000 });
 
         // Navigate to second image first
         await page.click('#next-btn');
@@ -63,8 +73,11 @@ test.describe('Gallery Navigation', () => {
     });
 
     test.skip('should update counter when navigating', async ({ page }) => {
-        await page.click('#loading-overlay');
-        await page.waitForTimeout(1000);
+        const loadingOverlay = page.locator('#loading-overlay');
+        await loadingOverlay.waitFor({ state: 'attached' });
+        await expect(loadingOverlay).toHaveAttribute('data-ready', 'true', { timeout: 10000 });
+        await loadingOverlay.click();
+        await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 2000 });
 
         // Check initial counter
         const caption = page.locator('#gallery-caption');
@@ -80,8 +93,11 @@ test.describe('Gallery Navigation', () => {
     });
 
     test('should disable previous button at start', async ({ page }) => {
-        await page.click('#loading-overlay');
-        await page.waitForTimeout(1000);
+        const loadingOverlay = page.locator('#loading-overlay');
+        await loadingOverlay.waitFor({ state: 'attached' });
+        await expect(loadingOverlay).toHaveAttribute('data-ready', 'true', { timeout: 10000 });
+        await loadingOverlay.click();
+        await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 2000 });
 
         const prevBtn = page.locator('#prev-btn');
         await expect(prevBtn).toBeDisabled();
@@ -89,8 +105,11 @@ test.describe('Gallery Navigation', () => {
 
     test.skip('should disable next button at end', async ({ page }) => {
         // Skipped because navigating to the end of a large gallery takes too long
-        await page.click('#loading-overlay');
-        await page.waitForTimeout(1000);
+        const loadingOverlay = page.locator('#loading-overlay');
+        await loadingOverlay.waitFor({ state: 'attached' });
+        await expect(loadingOverlay).toHaveAttribute('data-ready', 'true', { timeout: 10000 });
+        await loadingOverlay.click();
+        await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 2000 });
 
         // Navigate to last image (assuming small test gallery)
         const nextBtn = page.locator('#next-btn');

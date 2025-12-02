@@ -51,7 +51,12 @@ function getSupportedAudioSource(sources) {
     return sources[0];
 }
 
-// Export for ES6 modules (tests) while maintaining global scope for browser
+// Export for ES6 modules (tests)
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { getSupportedAudioSource };
+}
+
+// Always assign to window for browser usage
+if (typeof window !== 'undefined') {
+    window.getSupportedAudioSource = getSupportedAudioSource;
 }

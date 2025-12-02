@@ -10,25 +10,33 @@ test.describe('Keyboard Navigation', () => {
         await page.goto('/');
         // Disable animations to prevent Playwright stability timeouts
         await page.addStyleTag({ content: '*, *::before, *::after { animation: none !important; transition: none !important; }' });
-        await page.click('#loading-overlay');
-        await page.waitForTimeout(1000);
+        const loadingOverlay = page.locator('#loading-overlay');
+        // Wait for event listeners to be attached
+        await loadingOverlay.waitFor({ state: 'attached' });
+        await expect(loadingOverlay).toHaveAttribute('data-ready', 'true', { timeout: 10000 });
+        await loadingOverlay.click();
+        await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 2000 });
     });
 
     test('should navigate with arrow keys', async ({ page }) => {
-        const initialSrc = await page.locator('#gallery-image').getAttribute('src');
+        // Wait for the first image to load
+        const imageLocator = page.locator('#gallery-image');
+        await expect(imageLocator).toHaveAttribute('src', /.+/, { timeout: 5000 });
+
+        const initialSrc = await imageLocator.getAttribute('src');
 
         // Press right arrow
         await page.keyboard.press('ArrowRight');
         await page.waitForTimeout(500);
 
-        const newSrc = await page.locator('#gallery-image').getAttribute('src');
+        const newSrc = await imageLocator.getAttribute('src');
         expect(newSrc).not.toBe(initialSrc);
 
         // Press left arrow
         await page.keyboard.press('ArrowLeft');
         await page.waitForTimeout(500);
 
-        const backSrc = await page.locator('#gallery-image').getAttribute('src');
+        const backSrc = await imageLocator.getAttribute('src');
         expect(backSrc).toBe(initialSrc);
     });
 
