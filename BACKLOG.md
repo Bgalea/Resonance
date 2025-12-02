@@ -128,6 +128,26 @@ As a developer, I want all E2E tests to pass reliably across all browsers so I c
 
 ------------------------------------------------
 
+### FEATURE 14 – Optional Sound Configuration ✅ COMPLETED
+
+**Goal:** Allow users to disable sound functionality entirely, reducing resource usage and simplifying the UI for image-only galleries.
+
+**User Story:**
+As a gallery administrator, I want to configure whether the gallery uses sound or not, so I can create a simpler image-only experience when audio is not needed.
+
+**Implementation:**
+- [x] `enableSound` boolean configuration option (default: `true` for backward compatibility)
+- [x] When `enableSound` is `false`, audio modules are not loaded via `audioLoader.js`
+- [x] CSS `.sound-disabled` class hides audio controls when sound is disabled
+- [x] No audio files loaded when sound is disabled
+- [x] Gallery functions normally for image navigation without audio
+- [x] No console errors when sound is disabled
+
+**Status:** ✅ Implemented in v1.3.0  
+**Completed:** December 2025
+
+------------------------------------------------
+
 ## 📋 Planned Features
 
 ------------------------------------------------
@@ -147,29 +167,3 @@ As a curator, I want to display titles and descriptions for each image/group so 
 
 **Priority:** LOW  
 **Dependencies:** Asset structure, UI redesign to accommodate text.
-
-------------------------------------------------
-
-## FEATURE 14 – Optional Sound Configuration
-
-**Goal:** Allow users to disable sound functionality entirely, reducing resource usage and simplifying the UI for image-only galleries.
-
-**User Story:**
-As a gallery administrator, I want to configure whether the gallery uses sound or not, so I can create a simpler image-only experience when audio is not needed.
-
-**Acceptance Criteria:**
-- [ ] Add `enableSound` boolean configuration option (default: `true` for backward compatibility).
-- [ ] When `enableSound` is `false`:
-  - [ ] Audio-related UI controls are hidden (volume slider, mute button, play/pause button).
-  - [ ] Audio modules (`audioPlayer.js`, `audioUtils.js`) are not loaded.
-  - [ ] No audio files are loaded or requested from the server.
-  - [ ] Gallery functions normally for image navigation.
-- [ ] When `enableSound` is `true`:
-  - [ ] Gallery behaves exactly as current implementation (all audio features work).
-- [ ] Configuration can be set in the gallery config file.
-- [ ] No console errors or warnings when sound is disabled.
-- [ ] Documentation updated to explain the new configuration option.
-
-**Priority:** MEDIUM  
-**Dependencies:** None (enhances existing architecture).  
-**Estimated Effort:** 1-2 days

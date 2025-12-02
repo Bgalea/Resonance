@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.3.0] - 2025-12-02
 
+### Added
+- **Optional Sound Configuration**: New `enableSound` configuration option to disable audio functionality
+  - Set `enableSound: false` in gallery config to create image-only galleries
+  - Audio modules (`audioPlayer.js`, `audioUtils.js`) are not loaded when sound is disabled
+  - Audio controls automatically hidden via CSS when sound is disabled
+  - Reduces resource usage for galleries that don't need audio
+  - Maintains full backward compatibility (defaults to `true`)
+
 ### Fixed
 - **Critical Script Loading Race Condition**: Fixed race condition where `main.js` could execute before its dependencies (`assetLoader.js`, `gallery.js`) were loaded in Chromium and Mobile Chrome browsers
   - Moved `audioLoader.js` to end of script list in `index.html` to ensure proper dependency loading order
