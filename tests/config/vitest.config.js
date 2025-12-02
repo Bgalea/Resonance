@@ -16,6 +16,8 @@ export default defineConfig({
                 'js/browserCompatibility.js',
                 'js/config.js',
                 'js/main.js',
+                'js/audioLoader.js',
+                'js/audioUtils.js',
                 'js/fullscreen.js',
                 'js/touchControls.js',
                 'js/loadingStateManager.js',
