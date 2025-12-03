@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [Unreleased]
+
+### Added
+- **Feature 16**: Touch Zoom & Pan support for mobile devices
+  - Pinch-to-zoom (1x to 3x)
+  - Double-tap to zoom
+  - Pan support when zoomed
+  - Prevents swipe navigation while zoomed in
+
 ## [1.3.0] - 2025-12-02
 
 ### Added

@@ -189,22 +189,22 @@ As a viewer, I want to start a slideshow so I can enjoy the visual and audio exp
 
 ------------------------------------------------
 
-## FEATURE 16 – Touch Zoom & Pan
+### FEATURE 16 – Touch Zoom & Pan ✅ COMPLETED
 
 **Goal:** Enable detailed inspection of images on mobile devices.
 
 **User Story:**
 As a mobile user, I want to pinch to zoom into an image to see details, and pan around when zoomed in.
 
-**Acceptance Criteria:**
-- [ ] Pinch-to-zoom gesture support.
-- [ ] Double-tap to zoom in/out.
-- [ ] Pan gesture when zoomed in.
-- [ ] Reset zoom on slide change.
-- [ ] Smooth physics-based momentum (optional).
+**Implementation:**
+- [x] Pinch-to-zoom gesture support (1x to 3x)
+- [x] Double-tap to zoom in/out
+- [x] Pan gesture when zoomed in
+- [x] Reset zoom on slide change
+- [x] Smart integration with swipe navigation (swipes disabled when zoomed)
 
-**Priority:** HIGH (Mobile Critical)  
-**Role:** Product Owner Recommendation
+**Status:** ✅ Implemented in v1.3.1  
+**Completed:** December 2025
 
 ------------------------------------------------
 

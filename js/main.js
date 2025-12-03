@@ -151,6 +151,11 @@ async function updateState(prevSlide = null) {
         await loadingStateManager.waitForImage(currentSlide.src);
     }
 
+    // Reset zoom state when changing images
+    if (window.touchZoom) {
+        window.touchZoom.reset();
+    }
+
     // 2. Perform transition to new image
     await transitionManager.transition(imageEl, currentSlide.src);
 
@@ -294,6 +299,12 @@ document.addEventListener('keydown', (e) => {
     }
 })();
 
+// Initialize TouchZoom
+if (window.TouchZoom && imageEl) {
+    window.touchZoom = new TouchZoom();
+    window.touchZoom.attach(imageEl);
+}
+
 // Initialize Touch Controls with settings
 if (window.initTouchControls) {
     initTouchControls({
@@ -303,6 +314,10 @@ if (window.initTouchControls) {
         longPressDuration: galleryConfig.timing?.longPressDuration,
         onSwipeLeft: navigateNext,  // Use extracted function
         onSwipeRight: navigatePrev, // Use extracted function
+        shouldIgnoreSwipe: () => {
+            // Ignore swipe if zoomed in
+            return window.touchZoom && window.touchZoom.isZoomed();
+        },
         onTap: () => {
             // Toggle UI visibility
             const controls = document.querySelector('.controls-wrapper');
