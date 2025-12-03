@@ -167,3 +167,94 @@ As a curator, I want to display titles and descriptions for each image/group so 
 
 **Priority:** LOW  
 **Dependencies:** Asset structure, UI redesign to accommodate text.
+
+------------------------------------------------
+
+## FEATURE 15 – Slideshow Mode (Auto-Play)
+
+**Goal:** Allow users to sit back and watch the gallery play automatically with synchronized audio.
+
+**User Story:**
+As a viewer, I want to start a slideshow so I can enjoy the visual and audio experience hands-free.
+
+**Acceptance Criteria:**
+- [ ] "Play Slideshow" button in UI (and keyboard shortcut 'S').
+- [ ] Configurable interval (default 5s).
+- [ ] Pauses on user interaction (hover/touch).
+- [ ] Smart timing: waits for audio track completion if configured.
+- [ ] Visual progress indicator for next slide.
+
+**Priority:** MEDIUM  
+**Role:** Product Owner Recommendation
+
+------------------------------------------------
+
+## FEATURE 16 – Touch Zoom & Pan
+
+**Goal:** Enable detailed inspection of images on mobile devices.
+
+**User Story:**
+As a mobile user, I want to pinch to zoom into an image to see details, and pan around when zoomed in.
+
+**Acceptance Criteria:**
+- [ ] Pinch-to-zoom gesture support.
+- [ ] Double-tap to zoom in/out.
+- [ ] Pan gesture when zoomed in.
+- [ ] Reset zoom on slide change.
+- [ ] Smooth physics-based momentum (optional).
+
+**Priority:** HIGH (Mobile Critical)  
+**Role:** Product Owner Recommendation
+
+------------------------------------------------
+
+## FEATURE 17 – PWA & Offline Support
+
+**Goal:** Make the gallery installable and functional without an internet connection.
+
+**User Story:**
+As a user with spotty internet, I want the gallery to work offline so I can view previously loaded content.
+
+**Acceptance Criteria:**
+- [ ] Web App Manifest (installable on home screen).
+- [ ] Service Worker for asset caching.
+- [ ] Offline fallback UI.
+- [ ] Cache management strategy (Cache-First for assets).
+
+**Priority:** HIGH  
+**Role:** Architect Recommendation (Performance/Reliability)
+
+------------------------------------------------
+
+## FEATURE 18 – TypeScript Migration
+
+**Goal:** Improve code maintainability, type safety, and developer experience.
+
+**User Story:**
+As a developer, I want type safety and better IDE support to reduce runtime errors and refactoring risks.
+
+**Acceptance Criteria:**
+- [ ] Set up TypeScript build process (Vite or tsc).
+- [ ] Define interfaces for GalleryConfig, Asset, AudioTrack.
+- [ ] Incrementally migrate `.js` files to `.ts`.
+- [ ] Strict null checks enabled.
+
+**Priority:** MEDIUM (Technical Debt)  
+**Role:** Architect Recommendation (Maintainability)
+
+------------------------------------------------
+
+## FEATURE 19 – Automated Image Optimization Pipeline
+
+**Goal:** Ensure all served images are optimized for web performance automatically.
+
+**User Story:**
+As a developer, I want images to be automatically converted to WebP/AVIF and resized so I don't have to do it manually.
+
+**Acceptance Criteria:**
+- [ ] Script to generate WebP/AVIF variants of assets.
+- [ ] `<picture>` tag implementation in `AssetLoader` to serve best format.
+- [ ] Responsive `srcset` generation for different screen sizes.
+
+**Priority:** MEDIUM  
+**Role:** Architect Recommendation (Performance)
