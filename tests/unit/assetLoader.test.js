@@ -276,4 +276,64 @@ describe('AssetLoader', () => {
             expect(loader.queue.length).toBe(1); // Only critical remains
         });
     });
+    describe('Edge Cases & Error Handling', () => {
+        it('should handle missing group in preloadGroupCritical', async () => {
+            const result = await loader.preloadGroupCritical(null);
+            expect(result).toBeUndefined();
+        });
+
+        it('should handle missing group in preloadGroupBackground', async () => {
+            const result = await loader.preloadGroupBackground(null);
+            expect(result).toBeUndefined();
+        });
+
+        it('should handle group with single image in preloadGroupBackground', async () => {
+            const group = { images: [{ src: 'img1.jpg' }] };
+            const result = await loader.preloadGroupBackground(group);
+            expect(result).toBeUndefined();
+        });
+
+        it('should handle group with no images in preloadGroupBackground', async () => {
+            const group = { images: [] };
+            const result = await loader.preloadGroupBackground(group);
+            expect(result).toBeUndefined();
+        });
+    });
+
+    describe('Audio Source Selection', () => {
+        it('should use getSupportedAudioSource if available', async () => {
+            // Mock window.getSupportedAudioSource
+            global.window = {
+                getSupportedAudioSource: vi.fn().mockReturnValue('audio.ogg')
+            };
+
+            const group = {
+                audioSources: ['audio.mp3', 'audio.ogg'],
+                images: []
+            };
+
+            const p = loader.preloadGroupCritical(group);
+            await vi.advanceTimersByTimeAsync(100);
+            await p;
+
+            expect(global.window.getSupportedAudioSource).toHaveBeenCalledWith(group.audioSources);
+            expect(loader.cache.has('audio.ogg')).toBe(true);
+
+            // Cleanup
+            delete global.window;
+        });
+
+        it('should fallback to first audio source if helper missing', async () => {
+            const group = {
+                audioSources: ['audio.mp3', 'audio.ogg'],
+                images: []
+            };
+
+            const p = loader.preloadGroupCritical(group);
+            await vi.advanceTimersByTimeAsync(100);
+            await p;
+
+            expect(loader.cache.has('audio.mp3')).toBe(true);
+        });
+    });
 });

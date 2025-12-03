@@ -106,18 +106,23 @@ describe('TouchZoom', () => {
         }
 
         it('should handle double tap to zoom in', () => {
+            vi.useFakeTimers();
             const touch = createTouch(400, 300);
             const event1 = createTouchEvent('touchstart', [touch]);
             const event2 = createTouchEvent('touchstart', [touch]);
 
             touchZoom.handleTouchStart(event1);
-            setTimeout(() => {
-                touchZoom.handleTouchStart(event2);
-                expect(touchZoom.scale).toBe(2);
-            }, 100);
+
+            // Advance time by 100ms (within 300ms threshold)
+            vi.advanceTimersByTime(100);
+
+            touchZoom.handleTouchStart(event2);
+            expect(touchZoom.scale).toBe(2);
+            vi.useRealTimers();
         });
 
         it('should handle double tap to zoom out when already zoomed', () => {
+            vi.useFakeTimers();
             touchZoom.scale = 2;
 
             const touch = createTouch(400, 300);
@@ -125,10 +130,13 @@ describe('TouchZoom', () => {
             const event2 = createTouchEvent('touchstart', [touch]);
 
             touchZoom.handleTouchStart(event1);
-            setTimeout(() => {
-                touchZoom.handleTouchStart(event2);
-                expect(touchZoom.scale).toBe(1);
-            }, 100);
+
+            // Advance time by 100ms
+            vi.advanceTimersByTime(100);
+
+            touchZoom.handleTouchStart(event2);
+            expect(touchZoom.scale).toBe(1);
+            vi.useRealTimers();
         });
 
         it('should setup panning when zoomed and single touch', () => {
@@ -307,6 +315,66 @@ describe('TouchZoom', () => {
             touchZoom.detach();
             touchZoom.constrainPan(); // Should not throw
             expect(true).toBe(true);
+        });
+    });
+    describe('Double Tap Edge Cases', () => {
+        it('should reset zoom when double tapping while zoomed', () => {
+            touchZoom.scale = 2;
+            touchZoom.translateX = 50;
+            touchZoom.translateY = 50;
+
+            // Mock event
+            const event = { preventDefault: vi.fn() };
+            touchZoom.handleDoubleTap(event);
+
+            expect(touchZoom.scale).toBe(1);
+            expect(touchZoom.translateX).toBe(0);
+            expect(touchZoom.translateY).toBe(0);
+        });
+
+        it('should zoom to doubleTapScale when double tapping while not zoomed', () => {
+            touchZoom.scale = 1;
+
+            const event = { preventDefault: vi.fn() };
+            touchZoom.handleDoubleTap(event);
+
+            expect(touchZoom.scale).toBe(touchZoom.options.doubleTapScale);
+            expect(touchZoom.translateX).toBe(0);
+            expect(touchZoom.translateY).toBe(0);
+        });
+    });
+
+    describe('Snap Back Animation', () => {
+        it('should reset transition after snap back timeout', async () => {
+            vi.useFakeTimers();
+            touchZoom.scale = 0.5;
+
+            // Trigger snap back
+            const event = { touches: [] };
+            touchZoom.handleTouchEnd(event);
+
+            expect(element.style.transition).toBe('transform 0.3s ease-out');
+
+            // Fast forward past timeout
+            await vi.advanceTimersByTimeAsync(300);
+
+            expect(element.style.transition).toBe('transform 0.1s ease-out');
+            vi.useRealTimers();
+        });
+
+        it('should not throw if image detached during snap back timeout', async () => {
+            vi.useFakeTimers();
+            touchZoom.scale = 0.5;
+
+            const event = { touches: [] };
+            touchZoom.handleTouchEnd(event);
+
+            // Detach before timeout
+            touchZoom.detach();
+
+            // Should not throw
+            await vi.advanceTimersByTimeAsync(300);
+            vi.useRealTimers();
         });
     });
 });
