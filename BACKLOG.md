@@ -258,3 +258,156 @@ As a developer, I want images to be automatically converted to WebP/AVIF and res
 
 **Priority:** MEDIUM  
 **Role:** Architect Recommendation (Performance)
+
+------------------------------------------------
+
+## FEATURE 20 – E2E Tests for Touch Zoom & Pan
+
+**Goal:** Ensure Feature 16 (Touch Zoom & Pan) works correctly in real browser environments across devices.
+
+**User Story:**
+As a QA engineer, I want comprehensive E2E tests for touch zoom functionality so we can catch regressions and ensure cross-device compatibility.
+
+**Acceptance Criteria:**
+- [ ] Create `tests/e2e/touchZoom.spec.js` test suite
+- [ ] Test pinch-to-zoom functionality (1x to 3x scale)
+- [ ] Test double-tap zoom toggle (zoom in/out)
+- [ ] Test panning when zoomed with boundary constraints
+- [ ] Test swipe navigation disabled when zoomed
+- [ ] Test zoom reset on image navigation
+- [ ] Test on mobile viewports (iPhone, Android)
+- [ ] Test on touch-enabled desktop browsers
+
+**Priority:** HIGH (Critical Gap)  
+**Role:** Test Coverage Analysis  
+**Dependencies:** Feature 16 (completed), Playwright touch API
+
+------------------------------------------------
+
+## FEATURE 21 – Touch Gesture E2E Tests
+
+**Goal:** Add comprehensive E2E tests for all touch interactions beyond zoom.
+
+**User Story:**
+As a mobile user, I want confidence that swipe navigation and long-press controls work reliably across all touch devices.
+
+**Acceptance Criteria:**
+- [ ] Test swipe left/right for navigation using `page.touchscreen.swipe()`
+- [ ] Test long-press to pause/play audio
+- [ ] Test tap to toggle UI visibility
+- [ ] Test touch interactions on mobile viewports
+- [ ] Test gesture conflicts (e.g., browser pull-to-refresh)
+- [ ] Verify touch events don't interfere with keyboard shortcuts
+
+**Priority:** MEDIUM  
+**Role:** Test Coverage Analysis  
+**Dependencies:** Touch Controls (Feature 11)
+
+------------------------------------------------
+
+## FEATURE 22 – Advanced Fullscreen E2E Tests
+
+**Goal:** Enhance fullscreen mode testing to cover auto-hide behavior and edge cases.
+
+**User Story:**
+As a user, I want the fullscreen experience to be polished with controls that auto-hide after inactivity.
+
+**Acceptance Criteria:**
+- [ ] Test UI auto-hide after inactivity timeout (3 seconds)
+- [ ] Test UI shows on mouse movement/touch
+- [ ] Test fullscreen exit on browser back button
+- [ ] Test fullscreen state persistence across navigation
+- [ ] Test fullscreen on different screen orientations (portrait/landscape)
+- [ ] Test picture-in-picture compatibility
+
+**Priority:** LOW  
+**Role:** Test Coverage Analysis  
+**Dependencies:** Fullscreen Mode (Feature 7-9)
+
+------------------------------------------------
+
+## FEATURE 23 – Audio Group Transition E2E Tests
+
+**Goal:** Verify audio behavior when navigating between different groups.
+
+**User Story:**
+As a viewer, I want seamless audio transitions when moving between groups with different soundtracks.
+
+**Acceptance Criteria:**
+- [ ] Test audio track changes when crossing group boundaries
+- [ ] Test audio fade-out/fade-in during transitions
+- [ ] Test audio state (volume, mute) persists across groups
+- [ ] Test audio preloading for next group
+- [ ] Test audio cleanup when leaving group
+- [ ] Test group metadata updates in UI
+
+**Priority:** LOW  
+**Role:** Test Coverage Analysis  
+**Dependencies:** Audio Integration (Feature 4-6)
+
+------------------------------------------------
+
+## FEATURE 24 – Error Handling E2E Tests
+
+**Goal:** Ensure graceful degradation when assets fail to load or errors occur.
+
+**User Story:**
+As a user with poor connectivity, I want the gallery to handle missing images and audio gracefully without breaking.
+
+**Acceptance Criteria:**
+- [ ] Create `tests/e2e/error.spec.js` test suite
+- [ ] Test missing image file handling (404)
+- [ ] Test missing audio file handling
+- [ ] Test corrupted image handling
+- [ ] Test network timeout scenarios
+- [ ] Test browser console for error messages
+- [ ] Test fallback UI for error states
+- [ ] Test retry mechanisms
+
+**Priority:** MEDIUM  
+**Role:** Test Coverage Analysis  
+**Dependencies:** Asset Loader, Error handling implementation
+
+------------------------------------------------
+
+## FEATURE 25 – Visual Regression Testing
+
+**Goal:** Automatically detect unintended visual changes across releases.
+
+**User Story:**
+As a developer, I want to catch visual regressions automatically so UI bugs don't reach production.
+
+**Acceptance Criteria:**
+- [ ] Set up visual regression testing framework (Percy, Chromatic, or Playwright screenshots)
+- [ ] Capture baseline screenshots for all major UI states
+- [ ] Test across different viewports (mobile, tablet, desktop)
+- [ ] Test across different browsers
+- [ ] Integrate into CI/CD pipeline
+- [ ] Define acceptable diff thresholds
+
+**Priority:** LOW (Nice to Have)  
+**Role:** Test Coverage Analysis  
+**Dependencies:** CI/CD pipeline
+
+------------------------------------------------
+
+## FEATURE 26 – Performance Testing & Benchmarks
+
+**Goal:** Establish performance baselines and catch performance regressions.
+
+**User Story:**
+As a developer, I want to ensure the gallery loads quickly and runs smoothly across all devices.
+
+**Acceptance Criteria:**
+- [ ] Set up Lighthouse CI for performance audits
+- [ ] Define performance budgets (LCP < 2.5s, FID < 100ms, CLS < 0.1)
+- [ ] Test image loading performance
+- [ ] Test audio loading performance
+- [ ] Test transition smoothness (FPS monitoring)
+- [ ] Test memory usage over time
+- [ ] Create performance dashboard
+
+**Priority:** LOW (Nice to Have)  
+**Role:** Test Coverage Analysis  
+**Dependencies:** CI/CD pipeline, monitoring tools
+
