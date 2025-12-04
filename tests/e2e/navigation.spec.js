@@ -122,4 +122,84 @@ test.describe('Gallery Navigation', () => {
 
         await expect(nextBtn).toBeDisabled();
     });
+
+    // Helper for swipe simulation
+    const simulateSwipe = async (page, direction) => {
+        await page.evaluate((dir) => {
+            const container = document.querySelector('.gallery-container');
+            const startX = 300;
+            const startY = 300;
+            const endX = dir === 'left' ? 100 : 500;
+            const endY = 300;
+
+            // Helper to create Touch object (cross-browser)
+            const createTouch = (target, x, y) => {
+                return new Touch({
+                    identifier: Date.now(),
+                    target: target,
+                    clientX: x,
+                    clientY: y,
+                    screenX: x,
+                    screenY: y,
+                    pageX: x,
+                    pageY: y
+                });
+            };
+
+            const touchStart = createTouch(container, startX, startY);
+            container.dispatchEvent(new TouchEvent('touchstart', {
+                bubbles: true, cancelable: true, touches: [touchStart], changedTouches: [touchStart]
+            }));
+
+            const touchMove = createTouch(container, endX, endY);
+            container.dispatchEvent(new TouchEvent('touchmove', {
+                bubbles: true, cancelable: true, touches: [touchMove], changedTouches: [touchMove]
+            }));
+
+            const touchEnd = createTouch(container, endX, endY);
+            container.dispatchEvent(new TouchEvent('touchend', {
+                bubbles: true, cancelable: true, touches: [], changedTouches: [touchEnd]
+            }));
+        }, direction);
+    };
+
+    test('should navigate to next image on swipe left', async ({ page }) => {
+        const loadingOverlay = page.locator('#loading-overlay');
+        await loadingOverlay.waitFor({ state: 'attached' });
+        await expect(loadingOverlay).toHaveAttribute('data-ready', 'true', { timeout: 10000 });
+        await loadingOverlay.click();
+        await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 2000 });
+
+        const initialSrc = await page.locator('#gallery-image').getAttribute('src');
+
+        // Simulate swipe left
+        await simulateSwipe(page, 'left');
+
+        await page.waitForTimeout(500); // Wait for transition
+
+        const galleryImage = page.locator('#gallery-image');
+        await expect(galleryImage).not.toHaveAttribute('src', initialSrc);
+    });
+
+    test('should navigate to previous image on swipe right', async ({ page }) => {
+        const loadingOverlay = page.locator('#loading-overlay');
+        await loadingOverlay.waitFor({ state: 'attached' });
+        await expect(loadingOverlay).toHaveAttribute('data-ready', 'true', { timeout: 10000 });
+        await loadingOverlay.click();
+        await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 2000 });
+
+        // Go to next image first so we can go back
+        await page.click('#next-btn');
+        await page.waitForTimeout(500);
+
+        const secondImageSrc = await page.locator('#gallery-image').getAttribute('src');
+
+        // Simulate swipe right
+        await simulateSwipe(page, 'right');
+
+        await page.waitForTimeout(500);
+
+        const galleryImage = page.locator('#gallery-image');
+        await expect(galleryImage).not.toHaveAttribute('src', secondImageSrc);
+    });
 });

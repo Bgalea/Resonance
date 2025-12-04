@@ -110,4 +110,95 @@ test.describe('Audio Controls', () => {
         await expect(muteBtn).toHaveAttribute('aria-label');
         await expect(volumeSlider).toHaveAttribute('aria-label');
     });
+    test('should change audio source when navigating to new group', async ({ page }) => {
+        // Mock the config to have 2 groups with different audio
+        await page.route('**/js/generatedConfig.js', route => {
+            const mockConfig = `
+                window.galleryConfig = {
+                    title: "Test Gallery",
+                    groups: [
+                        {
+                            name: "Group 1",
+                            audioSrc: "audio1.mp3",
+                            images: [{ src: "img1.jpg" }]
+                        },
+                        {
+                            name: "Group 2",
+                            audioSrc: "audio2.mp3",
+                            images: [{ src: "img2.jpg" }]
+                        }
+                    ]
+                };
+            `;
+            route.fulfill({
+                status: 200,
+                contentType: 'application/javascript',
+                body: mockConfig
+            });
+        });
+
+        await page.goto('/');
+        const loadingOverlay = page.locator('#loading-overlay');
+        await loadingOverlay.waitFor({ state: 'attached' });
+        await expect(loadingOverlay).toHaveAttribute('data-ready', 'true', { timeout: 10000 });
+        await loadingOverlay.click();
+
+        // Check initial audio
+        const audio = page.locator('audio');
+        await expect(audio).toHaveAttribute('src', /audio1\.mp3/);
+
+        // Navigate to next group (Group 2)
+        await page.click('#next-btn');
+        await page.waitForTimeout(1000); // Increased wait for mobile
+
+        // Check new audio
+        await expect(audio).toHaveAttribute('src', /audio2\.mp3/);
+    });
+
+    test('should persist volume when changing groups', async ({ page }) => {
+        // Mock the config
+        await page.route('**/js/generatedConfig.js', route => {
+            const mockConfig = `
+                window.galleryConfig = {
+                    title: "Test Gallery",
+                    groups: [
+                        { name: "G1", audioSrc: "a1.mp3", images: [{ src: "i1.jpg" }] },
+                        { name: "G2", audioSrc: "a2.mp3", images: [{ src: "i2.jpg" }] }
+                    ]
+                };
+            `;
+            route.fulfill({
+                status: 200,
+                contentType: 'application/javascript',
+                body: mockConfig
+            });
+        });
+
+        await page.goto('/');
+        const loadingOverlay = page.locator('#loading-overlay');
+        await loadingOverlay.waitFor({ state: 'attached' });
+        await expect(loadingOverlay).toHaveAttribute('data-ready', 'true', { timeout: 10000 });
+        await loadingOverlay.click();
+
+        // Set volume
+        const volumeSlider = page.locator('#volume-slider');
+        await volumeSlider.evaluate(el => {
+            el.value = '0.3';
+            el.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+
+        // Wait for state to persist
+        await page.waitForTimeout(200);
+
+        // Navigate to next group
+        await page.click('#next-btn');
+        await page.waitForTimeout(500);
+
+        // Volume should still be 0.3
+        await expect(volumeSlider).toHaveValue('0.3');
+
+        // Audio element volume should also be 0.3
+        const audioVolume = await page.$eval('audio', el => el.volume);
+        expect(audioVolume).toBe(0.3);
+    });
 });

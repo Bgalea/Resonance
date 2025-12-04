@@ -66,4 +66,58 @@ test.describe('Fullscreen Mode', () => {
         const controls = page.locator('.controls-wrapper');
         await expect(controls).toBeVisible();
     });
+    test('should toggle controls on tap', async ({ page, browserName }) => {
+        test.skip(browserName === 'webkit', 'Tap simulation flaky on Webkit');
+
+        // Tap on the image (center)
+        const image = page.locator('#gallery-image');
+        const box = await image.boundingBox();
+        await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
+
+        await page.waitForTimeout(500);
+
+        const controls = page.locator('.controls-wrapper');
+        // Check if controls are hidden or shown (toggled)
+        // Initially visible, so should hide
+        await expect(controls).toHaveClass(/hidden-controls/);
+
+        // Tap again to show
+        await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
+        await page.waitForTimeout(500);
+        await expect(controls).not.toHaveClass(/hidden-controls/);
+    });
+
+    test('should auto-hide controls after inactivity in fullscreen', async ({ page }) => {
+        // Enter fullscreen
+        await page.click('#fullscreen-btn');
+        await page.waitForTimeout(500);
+
+        const controls = page.locator('.controls-wrapper');
+        await expect(controls).toBeVisible();
+
+        // Wait for auto-hide timeout (assuming default is 3000ms)
+        // We'll wait 3500ms to be safe
+        await page.waitForTimeout(3500);
+
+        await expect(controls).toHaveClass(/hidden-controls/);
+    });
+
+    test('should show controls on mouse move in fullscreen', async ({ page, isMobile }) => {
+        test.skip(isMobile, 'Mouse move not applicable on mobile');
+
+        // Enter fullscreen
+        await page.click('#fullscreen-btn');
+        await page.waitForTimeout(500);
+
+        // Wait for auto-hide
+        await page.waitForTimeout(3500);
+        const controls = page.locator('.controls-wrapper');
+        await expect(controls).toHaveClass(/hidden-controls/);
+
+        // Move mouse
+        await page.mouse.move(200, 200);
+        await page.mouse.move(210, 210); // Move a bit to trigger event
+
+        await expect(controls).not.toHaveClass(/hidden-controls/);
+    });
 });
