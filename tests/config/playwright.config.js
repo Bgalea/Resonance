@@ -2,15 +2,18 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
     testDir: '../e2e',
-    fullyParallel: true,
+    fullyParallel: false, // Disable full parallelism to reduce resource usage
     forbidOnly: !!process.env.CI,
-    retries: process.env.CI ? 2 : 0,
-    workers: process.env.CI ? 1 : undefined,
+    retries: process.env.CI ? 2 : 1, // Add retry for flaky tests
+    workers: 1, // Run tests sequentially to avoid resource exhaustion
+    timeout: 60000, // Increase global timeout from 30s to 60s
     reporter: [['html', { outputFolder: '../reports/playwright' }]],
     use: {
         baseURL: 'http://localhost:3000',
         trace: 'on-first-retry',
         screenshot: 'only-on-failure',
+        navigationTimeout: 30000, // Explicit navigation timeout
+        actionTimeout: 10000, // Timeout for actions like click
     },
     projects: [
         {

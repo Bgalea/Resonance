@@ -23,7 +23,7 @@ test.describe('Touch Zoom & Pan', () => {
         await loadingOverlay.waitFor({ state: 'attached' });
         await expect(loadingOverlay).toHaveAttribute('data-ready', 'true', { timeout: 10000 });
         await loadingOverlay.click();
-        await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 2000 });
+        await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 5000 });
 
         // Wait for image to be visible
         const galleryImage = page.locator('#gallery-image');

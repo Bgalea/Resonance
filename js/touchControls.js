@@ -42,14 +42,55 @@
         const TAP_THRESHOLD = options.tapThreshold || 10;
         const LONG_PRESS_DURATION = options.longPressDuration || 800;
 
-        // Touch Start
+        // --- Touch Events ---
         containerEl.addEventListener('touchstart', (e) => {
-            // We only care about single touch
             if (e.touches.length !== 1) return;
+            handleStart(e.touches[0].clientX, e.touches[0].clientY);
+        }, { passive: true });
 
-            const touch = e.touches[0];
-            startX = touch.clientX;
-            startY = touch.clientY;
+        containerEl.addEventListener('touchmove', (e) => {
+            if (e.touches.length !== 1) return;
+            handleMove(e.touches[0].clientX, e.touches[0].clientY);
+        }, { passive: true });
+
+        containerEl.addEventListener('touchend', (e) => {
+            if (e.changedTouches.length !== 1) return;
+            handleEnd(e.changedTouches[0].clientX, e.changedTouches[0].clientY, e.target);
+        });
+
+        // --- Mouse Events (for desktop support) ---
+        containerEl.addEventListener('mousedown', (e) => {
+            // Only left click
+            if (e.button !== 0) return;
+            handleStart(e.clientX, e.clientY);
+        });
+
+        containerEl.addEventListener('mousemove', (e) => {
+            // Only if button is held down (though mousedown sets isDragging state, we need to check)
+            // But for swipe we need drag. For tap we don't need drag but we need to track movement.
+            // We'll rely on our internal state.
+            if (startTime > 0) { // If gesture started
+                handleMove(e.clientX, e.clientY);
+            }
+        });
+
+        containerEl.addEventListener('mouseup', (e) => {
+            if (e.button !== 0) return;
+            handleEnd(e.clientX, e.clientY, e.target);
+            // Reset
+            startTime = 0;
+        });
+
+        containerEl.addEventListener('mouseleave', () => {
+            // Cancel gesture if mouse leaves container
+            if (longPressTimer) clearTimeout(longPressTimer);
+            startTime = 0;
+        });
+
+        // --- Unified Handlers ---
+        function handleStart(x, y) {
+            startX = x;
+            startY = y;
             startTime = Date.now();
             isDragging = false;
             longPressTriggered = false;
@@ -61,15 +102,11 @@
                     longPressTriggered = true;
                 }, LONG_PRESS_DURATION);
             }
-        }, { passive: true });
+        }
 
-        // Touch Move
-        containerEl.addEventListener('touchmove', (e) => {
-            if (e.touches.length !== 1) return;
-
-            const touch = e.touches[0];
-            const diffX = Math.abs(touch.clientX - startX);
-            const diffY = Math.abs(touch.clientY - startY);
+        function handleMove(x, y) {
+            const diffX = Math.abs(x - startX);
+            const diffY = Math.abs(y - startY);
 
             // Check if user moved enough to consider it a drag/swipe
             if (diffX > TAP_THRESHOLD || diffY > TAP_THRESHOLD) {
@@ -81,10 +118,9 @@
                     longPressTimer = null;
                 }
             }
-        }, { passive: true });
+        }
 
-        // Touch End
-        containerEl.addEventListener('touchend', (e) => {
+        function handleEnd(x, y, target) {
             // Always clear the timer on end
             if (longPressTimer) {
                 clearTimeout(longPressTimer);
@@ -94,38 +130,29 @@
             // If long press already fired, don't trigger other gestures
             if (longPressTriggered) return;
 
-            // If we were tracking a multi-touch or something else, ignore
-            if (e.changedTouches.length !== 1) return;
+            // Ensure we had a start event
+            if (startTime === 0) return;
 
-            const touch = e.changedTouches[0];
-            const diffX = touch.clientX - startX;
-            const diffY = touch.clientY - startY;
+            const diffX = x - startX;
+            const diffY = y - startY;
             const timeDiff = Date.now() - startTime;
 
             // 1. Check for Swipe (Horizontal)
-            // Must be a significant horizontal move and not too much vertical move
             if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(diffY) < 100) {
                 if (diffX > 0) {
-                    // Swipe Right -> Previous
                     if (onSwipeRight) onSwipeRight();
                 } else {
-                    // Swipe Left -> Next
                     if (onSwipeLeft) onSwipeLeft();
                 }
             }
             // 2. Check for Tap
-            // Must be little movement and short duration
             else if (!isDragging && Math.abs(diffX) < TAP_THRESHOLD && Math.abs(diffY) < TAP_THRESHOLD && timeDiff < LONG_PRESS_DURATION) {
-                // Check if tap was on an interactive element (button, input, etc.)
-                const target = touch.target;
                 const isInteractive = target.closest('button, input, select, textarea, a, [role="button"]');
-
-                // Only trigger tap handler if NOT tapping on interactive elements
                 if (!isInteractive && onTap) {
                     onTap();
                 }
             }
-        });
+        }
     }
 
     // Expose globally

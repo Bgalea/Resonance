@@ -68,7 +68,7 @@
 
         function showControls() {
             if (controlsEl) {
-                controlsEl.classList.remove('controls-hidden');
+                controlsEl.classList.remove('ui-hidden');
                 controlsEl.classList.add('controls-visible');
             }
             resetHideTimer();
@@ -77,7 +77,7 @@
         function hideControls() {
             if (isFullscreen() && controlsEl) {
                 controlsEl.classList.remove('controls-visible');
-                controlsEl.classList.add('controls-hidden');
+                controlsEl.classList.add('ui-hidden');
             }
         }
 

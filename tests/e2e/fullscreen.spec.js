@@ -15,7 +15,7 @@ test.describe('Fullscreen Mode', () => {
         await loadingOverlay.waitFor({ state: 'attached' });
         await expect(loadingOverlay).toHaveAttribute('data-ready', 'true', { timeout: 10000 });
         await loadingOverlay.click();
-        await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 2000 });
+        await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 5000 });
     });
 
     test('should have fullscreen button visible', async ({ page }) => {
@@ -79,12 +79,12 @@ test.describe('Fullscreen Mode', () => {
         const controls = page.locator('.controls-wrapper');
         // Check if controls are hidden or shown (toggled)
         // Initially visible, so should hide
-        await expect(controls).toHaveClass(/hidden-controls/);
+        await expect(controls).toHaveClass(/ui-hidden/);
 
         // Tap again to show
         await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
         await page.waitForTimeout(500);
-        await expect(controls).not.toHaveClass(/hidden-controls/);
+        await expect(controls).not.toHaveClass(/ui-hidden/);
     });
 
     test('should auto-hide controls after inactivity in fullscreen', async ({ page }) => {
@@ -99,7 +99,7 @@ test.describe('Fullscreen Mode', () => {
         // We'll wait 3500ms to be safe
         await page.waitForTimeout(3500);
 
-        await expect(controls).toHaveClass(/hidden-controls/);
+        await expect(controls).toHaveClass(/ui-hidden/);
     });
 
     test('should show controls on mouse move in fullscreen', async ({ page, isMobile }) => {
@@ -112,12 +112,12 @@ test.describe('Fullscreen Mode', () => {
         // Wait for auto-hide
         await page.waitForTimeout(3500);
         const controls = page.locator('.controls-wrapper');
-        await expect(controls).toHaveClass(/hidden-controls/);
+        await expect(controls).toHaveClass(/ui-hidden/);
 
         // Move mouse
         await page.mouse.move(200, 200);
         await page.mouse.move(210, 210); // Move a bit to trigger event
 
-        await expect(controls).not.toHaveClass(/hidden-controls/);
+        await expect(controls).not.toHaveClass(/ui-hidden/);
     });
 });

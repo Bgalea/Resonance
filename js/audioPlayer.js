@@ -16,6 +16,9 @@ class AudioPlayer {
 
         // Apply initial state
         this._applyVolume();
+
+        // Append to DOM for accessibility and testing
+        document.body.appendChild(this.audio);
     }
 
     /**

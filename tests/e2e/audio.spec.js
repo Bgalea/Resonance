@@ -116,16 +116,22 @@ test.describe('Audio Controls', () => {
             const mockConfig = `
                 window.galleryConfig = {
                     title: "Test Gallery",
+                    enableSound: true,
                     groups: [
                         {
                             name: "Group 1",
-                            audioSrc: "audio1.mp3",
-                            images: [{ src: "img1.jpg" }]
+                            audioSrc: "assets/audio/audio1.mp3",
+                            images: [
+                                { src: "assets/img1.jpg", caption: "Image 1" },
+                                { src: "assets/img2.jpg", caption: "Image 2" }
+                            ]
                         },
                         {
                             name: "Group 2",
-                            audioSrc: "audio2.mp3",
-                            images: [{ src: "img2.jpg" }]
+                            audioSrc: "assets/audio/audio2.mp3",
+                            images: [
+                                { src: "assets/img3.jpg", caption: "Image 3" }
+                            ]
                         }
                     ]
                 };
@@ -143,16 +149,26 @@ test.describe('Audio Controls', () => {
         await expect(loadingOverlay).toHaveAttribute('data-ready', 'true', { timeout: 10000 });
         await loadingOverlay.click();
 
-        // Check initial audio
+        // Wait for audio element to be created
         const audio = page.locator('audio');
+        await audio.waitFor({ state: 'attached', timeout: 10000 });
+
+        // Check initial audio
         await expect(audio).toHaveAttribute('src', /audio1\.mp3/);
 
-        // Navigate to next group (Group 2)
+        // Navigate to next image (still in group 1)
         await page.click('#next-btn');
-        await page.waitForTimeout(1000); // Increased wait for mobile
+        await page.waitForTimeout(1000);
 
-        // Check new audio
-        await expect(audio).toHaveAttribute('src', /audio2\.mp3/);
+        // Audio should still be audio1
+        await expect(audio).toHaveAttribute('src', /audio1\.mp3/);
+
+        // Navigate to next image (now in group 2)
+        await page.click('#next-btn');
+        await page.waitForTimeout(2000);
+
+        // Check new audio - wait for source to change
+        await expect(audio).toHaveAttribute('src', /audio2\.mp3/, { timeout: 10000 });
     });
 
     test('should persist volume when changing groups', async ({ page }) => {
@@ -161,9 +177,21 @@ test.describe('Audio Controls', () => {
             const mockConfig = `
                 window.galleryConfig = {
                     title: "Test Gallery",
+                    enableSound: true,
                     groups: [
-                        { name: "G1", audioSrc: "a1.mp3", images: [{ src: "i1.jpg" }] },
-                        { name: "G2", audioSrc: "a2.mp3", images: [{ src: "i2.jpg" }] }
+                        { 
+                            name: "G1", 
+                            audioSrc: "assets/audio/a1.mp3", 
+                            images: [
+                                { src: "assets/i1.jpg", caption: "I1" },
+                                { src: "assets/i2.jpg", caption: "I2" }
+                            ] 
+                        },
+                        { 
+                            name: "G2", 
+                            audioSrc: "assets/audio/a2.mp3", 
+                            images: [{ src: "assets/i3.jpg", caption: "I3" }] 
+                        }
                     ]
                 };
             `;
@@ -188,11 +216,15 @@ test.describe('Audio Controls', () => {
         });
 
         // Wait for state to persist
-        await page.waitForTimeout(200);
-
-        // Navigate to next group
-        await page.click('#next-btn');
         await page.waitForTimeout(500);
+
+        // Navigate to next image (still in group 1)
+        await page.click('#next-btn');
+        await page.waitForTimeout(1000);
+
+        // Navigate to group 2
+        await page.click('#next-btn');
+        await page.waitForTimeout(2000);
 
         // Volume should still be 0.3
         await expect(volumeSlider).toHaveValue('0.3');

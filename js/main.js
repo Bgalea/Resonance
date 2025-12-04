@@ -22,9 +22,10 @@ try {
 
     // Conditional audio player initialization
     // --- Audio Control Logic ---
-    audioPlayer = (galleryConfig.enableSound && window.AudioPlayer) ? new AudioPlayer() : null;
+    const soundEnabled = galleryConfig.enableSound !== false; // Default to true
+    audioPlayer = (soundEnabled && window.AudioPlayer) ? new AudioPlayer() : null;
 
-    if (galleryConfig.enableSound && !audioPlayer) {
+    if (soundEnabled && !audioPlayer) {
         console.warn('Audio enabled in config but AudioPlayer class not found');
     }
 } catch (e) {

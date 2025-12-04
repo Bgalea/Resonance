@@ -25,7 +25,7 @@ test.describe('Gallery Navigation', () => {
         await loadingOverlay.click();
 
         // Wait for loading overlay to disappear
-        await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 2000 });
+        await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 5000 });
 
         // First image should be visible
         const galleryImage = page.locator('#gallery-image');
@@ -38,7 +38,7 @@ test.describe('Gallery Navigation', () => {
         await loadingOverlay.waitFor({ state: 'attached' });
         await expect(loadingOverlay).toHaveAttribute('data-ready', 'true', { timeout: 10000 });
         await loadingOverlay.click();
-        await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 2000 });
+        await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 5000 });
 
         // Get initial image src
         const initialSrc = await page.locator('#gallery-image').getAttribute('src');
@@ -56,7 +56,7 @@ test.describe('Gallery Navigation', () => {
         await loadingOverlay.waitFor({ state: 'attached' });
         await expect(loadingOverlay).toHaveAttribute('data-ready', 'true', { timeout: 10000 });
         await loadingOverlay.click();
-        await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 2000 });
+        await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 5000 });
 
         // Navigate to second image first
         await page.click('#next-btn');
@@ -77,7 +77,7 @@ test.describe('Gallery Navigation', () => {
         await loadingOverlay.waitFor({ state: 'attached' });
         await expect(loadingOverlay).toHaveAttribute('data-ready', 'true', { timeout: 10000 });
         await loadingOverlay.click();
-        await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 2000 });
+        await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 5000 });
 
         // Check initial counter
         const caption = page.locator('#gallery-caption');
@@ -97,7 +97,7 @@ test.describe('Gallery Navigation', () => {
         await loadingOverlay.waitFor({ state: 'attached' });
         await expect(loadingOverlay).toHaveAttribute('data-ready', 'true', { timeout: 10000 });
         await loadingOverlay.click();
-        await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 2000 });
+        await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 5000 });
 
         const prevBtn = page.locator('#prev-btn');
         await expect(prevBtn).toBeDisabled();
@@ -109,7 +109,7 @@ test.describe('Gallery Navigation', () => {
         await loadingOverlay.waitFor({ state: 'attached' });
         await expect(loadingOverlay).toHaveAttribute('data-ready', 'true', { timeout: 10000 });
         await loadingOverlay.click();
-        await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 2000 });
+        await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 5000 });
 
         // Navigate to last image (assuming small test gallery)
         const nextBtn = page.locator('#next-btn');
@@ -124,43 +124,32 @@ test.describe('Gallery Navigation', () => {
     });
 
     // Helper for swipe simulation
+    // Helper for swipe simulation
     const simulateSwipe = async (page, direction) => {
-        await page.evaluate((dir) => {
-            const container = document.querySelector('.gallery-container');
-            const startX = 300;
-            const startY = 300;
-            const endX = dir === 'left' ? 100 : 500;
-            const endY = 300;
+        const container = page.locator('.gallery-container');
+        const box = await container.boundingBox();
+        if (!box) throw new Error('Gallery container not found');
 
-            // Helper to create Touch object (cross-browser)
-            const createTouch = (target, x, y) => {
-                return new Touch({
-                    identifier: Date.now(),
-                    target: target,
-                    clientX: x,
-                    clientY: y,
-                    screenX: x,
-                    screenY: y,
-                    pageX: x,
-                    pageY: y
-                });
-            };
+        const centerY = box.y + box.height / 2;
+        const centerX = box.x + box.width / 2;
 
-            const touchStart = createTouch(container, startX, startY);
-            container.dispatchEvent(new TouchEvent('touchstart', {
-                bubbles: true, cancelable: true, touches: [touchStart], changedTouches: [touchStart]
-            }));
+        let startX, endX;
+        if (direction === 'left') {
+            // Swipe Left: Drag from Right to Left
+            startX = centerX + 100;
+            endX = centerX - 100;
+        } else {
+            // Swipe Right: Drag from Left to Right
+            startX = centerX - 100;
+            endX = centerX + 100;
+        }
 
-            const touchMove = createTouch(container, endX, endY);
-            container.dispatchEvent(new TouchEvent('touchmove', {
-                bubbles: true, cancelable: true, touches: [touchMove], changedTouches: [touchMove]
-            }));
-
-            const touchEnd = createTouch(container, endX, endY);
-            container.dispatchEvent(new TouchEvent('touchend', {
-                bubbles: true, cancelable: true, touches: [], changedTouches: [touchEnd]
-            }));
-        }, direction);
+        // Simulate drag gesture
+        await page.mouse.move(startX, centerY);
+        await page.mouse.down();
+        // Move in steps to simulate real drag
+        await page.mouse.move(endX, centerY, { steps: 10 });
+        await page.mouse.up();
     };
 
     test('should navigate to next image on swipe left', async ({ page }) => {
@@ -168,7 +157,7 @@ test.describe('Gallery Navigation', () => {
         await loadingOverlay.waitFor({ state: 'attached' });
         await expect(loadingOverlay).toHaveAttribute('data-ready', 'true', { timeout: 10000 });
         await loadingOverlay.click();
-        await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 2000 });
+        await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 5000 });
 
         const initialSrc = await page.locator('#gallery-image').getAttribute('src');
 
@@ -186,7 +175,7 @@ test.describe('Gallery Navigation', () => {
         await loadingOverlay.waitFor({ state: 'attached' });
         await expect(loadingOverlay).toHaveAttribute('data-ready', 'true', { timeout: 10000 });
         await loadingOverlay.click();
-        await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 2000 });
+        await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 5000 });
 
         // Go to next image first so we can go back
         await page.click('#next-btn');

@@ -134,7 +134,7 @@ class Gallery {
      * @param {Object} nextSlide 
      */
     isNewGroup(prevSlide, nextSlide) {
-        return prevSlide.groupId !== nextSlide.groupId;
+        return prevSlide.groupIndex !== nextSlide.groupIndex;
     }
 
     /**

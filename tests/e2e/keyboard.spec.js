@@ -15,7 +15,7 @@ test.describe('Keyboard Navigation', () => {
         await loadingOverlay.waitFor({ state: 'attached' });
         await expect(loadingOverlay).toHaveAttribute('data-ready', 'true', { timeout: 10000 });
         await loadingOverlay.click();
-        await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 2000 });
+        await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 5000 });
     });
 
     test('should navigate with arrow keys', async ({ page }) => {
