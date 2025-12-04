@@ -407,3 +407,22 @@ As a developer, I want to ensure the gallery loads quickly and runs smoothly acr
 **Role:** Test Coverage Analysis  
 **Dependencies:** CI/CD pipeline, monitoring tools
 
+
+------------------------------------------------
+
+## FEATURE 27 – Sound Transition (Crossfading)
+
+**Goal:** Create smooth audio transitions between groups to avoid abrupt cuts.
+
+**User Story:**
+As a viewer, I want the audio from the previous group to crossfade into the new group's audio so the experience feels seamless and professional.
+
+**Acceptance Criteria:**
+- [ ] Implement crossfading logic in `AudioPlayer` (fade out old, fade in new).
+- [ ] Configurable crossfade duration (default e.g., 2000ms).
+- [ ] Handle rapid group changes gracefully (cancel previous fade).
+- [ ] Ensure no volume spikes during the merge.
+- [ ] Respect `enableSound` configuration.
+
+**Priority:** MEDIUM
+**Role:** Product Owner Request
