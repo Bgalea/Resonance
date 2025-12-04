@@ -18,7 +18,13 @@ class AudioPlayer {
         this._applyVolume();
 
         // Append to DOM for accessibility and testing
-        document.body.appendChild(this.audio);
+        try {
+            if (typeof document !== 'undefined' && document.body) {
+                document.body.appendChild(this.audio);
+            }
+        } catch (e) {
+            // Ignore DOM errors in test environment
+        }
     }
 
     /**
