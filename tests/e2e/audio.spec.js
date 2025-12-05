@@ -202,6 +202,12 @@ test.describe('Audio Controls', () => {
             });
         });
 
+        await page.route('**/assets/**/*', route => {
+            // When test tries to load "assets/i1.jpg"
+            // Playwright intercepts it and provides fake image data
+            // instead of looking for a real file
+        });
+
         await page.goto('/');
         const loadingOverlay = page.locator('#loading-overlay');
         await loadingOverlay.waitFor({ state: 'attached' });
