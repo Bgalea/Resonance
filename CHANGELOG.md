@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Feature 27**: Sound Transition (Crossfading)
+  - Audio now crossfades smoothly when switching between groups
+  - Configurable crossfade duration (default: 2000ms)
+  - Dual audio element management for seamless transitions
+  - Prevents abrupt audio cuts for professional listening experience
 - **Feature 16**: Touch Zoom & Pan support for mobile devices
   - Pinch-to-zoom (1x to 3x)
   - Double-tap to zoom

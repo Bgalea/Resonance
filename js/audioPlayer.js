@@ -7,7 +7,10 @@ class AudioPlayer {
     constructor() {
         this.audio = new Audio();
         this.audio.loop = true;
+        this.fadingAudio = null; // Track being faded out
         this.currentSrc = null;
+        this.crossfadeDuration = (typeof galleryConfig !== 'undefined' && galleryConfig.crossfadeDuration) || 2000;
+        this.fadeInterval = null;
 
         // Global audio state
         const storedVolume = localStorage.getItem('audioVolume');
@@ -28,25 +31,96 @@ class AudioPlayer {
     }
 
     /**
-     * Sets the track to play.
-     * Applies current volume/mute settings to the new track.
+     * Sets the track to play with crossfading.
      * @param {string} src - The URL of the audio track.
      */
     setTrack(src) {
         if (this.currentSrc === src) {
-            // Already playing this track, do nothing to ensure seamless loop
             return;
         }
 
-        this.stop();
+        // 1. Handle existing track (Fade Out)
+        if (this.currentSrc) {
+            // If we already have a fading track, stop it immediately
+            if (this.fadingAudio) {
+                this.fadingAudio.pause();
+                this.fadingAudio = null;
+            }
+
+            // Move current audio to fading audio
+            this.fadingAudio = this.audio;
+
+            // Create new audio element for new track
+            this.audio = new Audio();
+            this.audio.loop = true;
+            try {
+                if (typeof document !== 'undefined' && document.body) {
+                    document.body.appendChild(this.audio);
+                }
+            } catch (e) { }
+        }
+
         this.currentSrc = src;
 
         if (src) {
             this.audio.src = src;
-            // Ensure volume/mute state is applied to the new source
-            this._applyVolume();
+            // Start silent
+            this.audio.volume = 0;
+            this.audio.muted = this.isMuted;
+
             this.play();
+
+            // Start Crossfade
+            this._startCrossfade();
+        } else {
+            // If no new track, just fade out old one
+            this._startCrossfade();
         }
+    }
+
+    _startCrossfade() {
+        if (this.fadeInterval) {
+            clearInterval(this.fadeInterval);
+        }
+
+        const startTime = Date.now();
+        const duration = this.crossfadeDuration;
+        const targetVolume = this.isMuted ? 0 : this.volume;
+        const startVolumeFading = this.fadingAudio ? this.fadingAudio.volume : 0;
+
+        this.fadeInterval = setInterval(() => {
+            const elapsed = Date.now() - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+
+            // Fade In New Track
+            if (this.audio && !this.isMuted) {
+                this.audio.volume = progress * targetVolume;
+            }
+
+            // Fade Out Old Track
+            if (this.fadingAudio) {
+                this.fadingAudio.volume = Math.max(0, startVolumeFading * (1 - progress));
+            }
+
+            // Cleanup when done
+            if (progress >= 1) {
+                clearInterval(this.fadeInterval);
+                this.fadeInterval = null;
+
+                if (this.fadingAudio) {
+                    this.fadingAudio.pause();
+                    try {
+                        if (this.fadingAudio.parentNode) {
+                            this.fadingAudio.parentNode.removeChild(this.fadingAudio);
+                        }
+                    } catch (e) { }
+                    this.fadingAudio = null;
+                }
+
+                // Ensure final volume is exact
+                this._applyVolume();
+            }
+        }, 50); // Update every 50ms
     }
 
     /**
@@ -81,6 +155,17 @@ class AudioPlayer {
      * Internal helper to apply volume based on mute state.
      */
     _applyVolume() {
+        // If fading, don't snap volume, let fade finish (or restart fade if needed logic could be added)
+        // For simplicity, if user changes volume during fade, we snap to new volume to be responsive
+        if (this.fadeInterval) {
+            clearInterval(this.fadeInterval);
+            this.fadeInterval = null;
+            if (this.fadingAudio) {
+                this.fadingAudio.pause();
+                this.fadingAudio = null;
+            }
+        }
+
         this.audio.muted = this.isMuted;
         if (this.isMuted) {
             this.audio.volume = 0;
@@ -107,8 +192,13 @@ class AudioPlayer {
      * Stops the audio and resets time to 0.
      */
     stop() {
+        if (this.fadeInterval) clearInterval(this.fadeInterval);
         this.audio.pause();
         this.audio.currentTime = 0;
+        if (this.fadingAudio) {
+            this.fadingAudio.pause();
+            this.fadingAudio = null;
+        }
     }
 
     /**

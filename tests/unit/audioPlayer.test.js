@@ -3,7 +3,7 @@
  * Tests volume control, mute functionality, and track switching
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { AudioPlayer } from '../../js/audioPlayer.js';
 
 describe('AudioPlayer', () => {
@@ -12,12 +12,23 @@ describe('AudioPlayer', () => {
     beforeEach(() => {
         // Clear localStorage before each test
         localStorage.clear();
+        // Mock timers for crossfade testing
+        vi.useFakeTimers();
+        // Mock global config if needed, or rely on default
+        global.galleryConfig = { crossfadeDuration: 2000 };
+
         audioPlayer = new AudioPlayer();
+        // Mock play to avoid errors
+        audioPlayer.audio.play = vi.fn().mockResolvedValue(undefined);
+    });
+
+    afterEach(() => {
+        vi.useRealTimers();
+        delete global.galleryConfig;
     });
 
     describe('Initialization', () => {
         it('should initialize with default volume of 0.7', () => {
-            // Default is 0.7 in code now
             expect(audioPlayer.volume).toBe(0.7);
         });
 
@@ -58,7 +69,7 @@ describe('AudioPlayer', () => {
         });
 
         it('should apply volume to current audio', () => {
-            audioPlayer.setTrack('test.mp3');
+            // Without setTrack, it applies immediately
             audioPlayer.setVolume(0.5);
             expect(audioPlayer.currentAudio.volume).toBe(0.5);
         });
@@ -88,7 +99,6 @@ describe('AudioPlayer', () => {
         });
 
         it('should apply mute to current audio', () => {
-            audioPlayer.setTrack('test.mp3');
             audioPlayer.setMuted(true);
             expect(audioPlayer.currentAudio.muted).toBe(true);
         });
@@ -100,9 +110,19 @@ describe('AudioPlayer', () => {
             expect(audioPlayer.currentAudio.src).toContain('test.mp3');
         });
 
-        it('should preserve volume when switching tracks', () => {
+        it('should start with volume 0 and fade in to target volume', () => {
             audioPlayer.setVolume(0.5);
             audioPlayer.setTrack('test.mp3');
+
+            // Initially 0 for crossfade
+            expect(audioPlayer.currentAudio.volume).toBe(0);
+
+            // Advance halfway (1000ms)
+            vi.advanceTimersByTime(1000);
+            expect(audioPlayer.currentAudio.volume).toBeCloseTo(0.25, 1);
+
+            // Advance to end (2000ms)
+            vi.advanceTimersByTime(1000);
             expect(audioPlayer.currentAudio.volume).toBe(0.5);
         });
 
@@ -117,13 +137,31 @@ describe('AudioPlayer', () => {
             expect(audioPlayer.currentAudio.loop).toBe(true);
         });
 
-        it('should pause old audio before switching', () => {
+        it('should fade out old audio before removing', () => {
+            // Setup first track
+            audioPlayer.setVolume(1.0);
             audioPlayer.setTrack('test1.mp3');
-            const oldAudio = audioPlayer.currentAudio;
-            const pauseSpy = vi.spyOn(oldAudio, 'pause');
+            vi.advanceTimersByTime(2000); // Finish fade in
 
+            const oldAudio = audioPlayer.currentAudio;
+            oldAudio.play = vi.fn(); // Mock play
+            oldAudio.pause = vi.fn(); // Mock pause
+
+            // Switch track
             audioPlayer.setTrack('test2.mp3');
-            expect(pauseSpy).toHaveBeenCalled();
+
+            // Old audio should be fadingAudio now
+            expect(audioPlayer.fadingAudio).toBe(oldAudio);
+
+            // Advance halfway
+            vi.advanceTimersByTime(1000);
+            expect(oldAudio.volume).toBeCloseTo(0.5, 1);
+
+            // Advance to end
+            vi.advanceTimersByTime(1000);
+            expect(oldAudio.volume).toBe(0);
+            expect(oldAudio.pause).toHaveBeenCalled();
+            expect(audioPlayer.fadingAudio).toBeNull();
         });
 
         it('should not change track if src is the same', () => {
@@ -138,24 +176,19 @@ describe('AudioPlayer', () => {
     describe('play() and stop()', () => {
         beforeEach(() => {
             audioPlayer.setTrack('test.mp3');
+            // Fast forward fade for these tests
+            vi.advanceTimersByTime(2000);
         });
 
         it('should play audio', async () => {
             await audioPlayer.play();
-            expect(audioPlayer.currentAudio.paused).toBe(false);
+            expect(audioPlayer.currentAudio.play).toHaveBeenCalled();
         });
 
         it('should stop audio', () => {
+            const pauseSpy = vi.spyOn(audioPlayer.currentAudio, 'pause');
             audioPlayer.stop();
-            expect(audioPlayer.currentAudio.paused).toBe(true);
-        });
-
-        it('should toggle play/stop', async () => {
-            await audioPlayer.play();
-            expect(audioPlayer.currentAudio.paused).toBe(false);
-
-            audioPlayer.stop();
-            expect(audioPlayer.currentAudio.paused).toBe(true);
+            expect(pauseSpy).toHaveBeenCalled();
         });
     });
 

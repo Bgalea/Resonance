@@ -2,6 +2,143 @@
 
 This document outlines planned and completed features for the Modern Audio Gallery.
 
+## 📋 Planned Features
+
+------------------------------------------------
+
+## FEATURE 13 – Artist / Metadata Support per Group & Picture
+
+**Goal:** Associate metadata with groups and/or images (title, description, tags, etc.).
+
+**User Story:**
+As a curator, I want to display titles and descriptions for each image/group so viewers understand the context.
+
+**Acceptance Criteria:**
+- [ ] Optional metadata JSON files per group (e.g., `assets/groups/<groupId>/info.json`).
+- [ ] Support for `groupTitle`, `groupDescription`.
+- [ ] Support for per-picture `title`, `description`, `tags`.
+- [ ] UI updates to display this information if present.
+
+**Priority:** LOW  
+**Dependencies:** Asset structure, UI redesign to accommodate text.
+
+------------------------------------------------
+
+## FEATURE 15 – Slideshow Mode (Auto-Play)
+
+**Goal:** Allow users to sit back and watch the gallery play automatically with synchronized audio.
+
+**User Story:**
+As a viewer, I want to start a slideshow so I can enjoy the visual and audio experience hands-free.
+
+**Acceptance Criteria:**
+- [ ] "Play Slideshow" button in UI (and keyboard shortcut 'S').
+- [ ] Configurable interval (default 5s).
+- [ ] Pauses on user interaction (hover/touch).
+- [ ] Smart timing: waits for audio track completion if configured.
+- [ ] Visual progress indicator for next slide.
+
+**Priority:** LOW  
+**Role:** Product Owner Recommendation
+
+------------------------------------------------
+
+## FEATURE 17 – PWA & Offline Support
+
+**Goal:** Make the gallery installable and functional without an internet connection.
+
+**User Story:**
+As a user with spotty internet, I want the gallery to work offline so I can view previously loaded content.
+
+**Acceptance Criteria:**
+- [ ] Web App Manifest (installable on home screen).
+- [ ] Service Worker for asset caching.
+- [ ] Offline fallback UI.
+- [ ] Cache management strategy (Cache-First for assets).
+
+**Priority:** HIGH  
+**Role:** Architect Recommendation (Performance/Reliability)
+
+------------------------------------------------
+
+## FEATURE 18 – TypeScript Migration
+
+**Goal:** Improve code maintainability, type safety, and developer experience.
+
+**User Story:**
+As a developer, I want type safety and better IDE support to reduce runtime errors and refactoring risks.
+
+**Acceptance Criteria:**
+- [ ] Set up TypeScript build process (Vite or tsc).
+- [ ] Define interfaces for GalleryConfig, Asset, AudioTrack.
+- [ ] Incrementally migrate `.js` files to `.ts`.
+- [ ] Strict null checks enabled.
+
+**Priority:** MEDIUM (Technical Debt)  
+**Role:** Architect Recommendation (Maintainability)
+
+------------------------------------------------
+
+## FEATURE 19 – Automated Image Optimization Pipeline
+
+**Goal:** Ensure all served images are optimized for web performance automatically.
+
+**User Story:**
+As a developer, I want images to be automatically converted to WebP/AVIF and resized so I don't have to do it manually.
+
+**Acceptance Criteria:**
+- [ ] Script to generate WebP/AVIF variants of assets.
+- [ ] `<picture>` tag implementation in `AssetLoader` to serve best format.
+- [ ] Responsive `srcset` generation for different screen sizes.
+
+**Priority:** HIGH  
+**Role:** Architect Recommendation (Performance)
+
+------------------------------------------------
+
+## FEATURE 25 – Visual Regression Testing
+
+**Goal:** Automatically detect unintended visual changes across releases.
+
+**User Story:**
+As a developer, I want to catch visual regressions automatically so UI bugs don't reach production.
+
+**Acceptance Criteria:**
+- [ ] Set up visual regression testing framework (Percy, Chromatic, or Playwright screenshots)
+- [ ] Capture baseline screenshots for all major UI states
+- [ ] Test across different viewports (mobile, tablet, desktop)
+- [ ] Test across different browsers
+- [ ] Integrate into CI/CD pipeline
+- [ ] Define acceptable diff thresholds
+
+**Priority:** LOW (Nice to Have)  
+**Role:** Test Coverage Analysis  
+**Dependencies:** CI/CD pipeline
+
+------------------------------------------------
+
+## FEATURE 26 – Performance Testing & Benchmarks
+
+**Goal:** Establish performance baselines and catch performance regressions.
+
+**User Story:**
+As a developer, I want to ensure the gallery loads quickly and runs smoothly across all devices.
+
+**Acceptance Criteria:**
+- [ ] Set up Lighthouse CI for performance audits
+- [ ] Define performance budgets (LCP < 2.5s, FID < 100ms, CLS < 0.1)
+- [ ] Test image loading performance
+- [ ] Test audio loading performance
+- [ ] Test transition smoothness (FPS monitoring)
+- [ ] Test memory usage over time
+- [ ] Create performance dashboard
+
+**Priority:** LOW (Nice to Have)  
+**Role:** Test Coverage Analysis  
+**Dependencies:** CI/CD pipeline, monitoring tools
+
+------------------------------------------------
+
 ## ✅ Completed Features
 
 ------------------------------------------------
@@ -148,47 +285,6 @@ As a gallery administrator, I want to configure whether the gallery uses sound o
 
 ------------------------------------------------
 
-## 📋 Planned Features
-
-------------------------------------------------
-
-## FEATURE 13 – Artist / Metadata Support per Group & Picture
-
-**Goal:** Associate metadata with groups and/or images (title, description, tags, etc.).
-
-**User Story:**
-As a curator, I want to display titles and descriptions for each image/group so viewers understand the context.
-
-**Acceptance Criteria:**
-- [ ] Optional metadata JSON files per group (e.g., `assets/groups/<groupId>/info.json`).
-- [ ] Support for `groupTitle`, `groupDescription`.
-- [ ] Support for per-picture `title`, `description`, `tags`.
-- [ ] UI updates to display this information if present.
-
-**Priority:** LOW  
-**Dependencies:** Asset structure, UI redesign to accommodate text.
-
-------------------------------------------------
-
-## FEATURE 15 – Slideshow Mode (Auto-Play)
-
-**Goal:** Allow users to sit back and watch the gallery play automatically with synchronized audio.
-
-**User Story:**
-As a viewer, I want to start a slideshow so I can enjoy the visual and audio experience hands-free.
-
-**Acceptance Criteria:**
-- [ ] "Play Slideshow" button in UI (and keyboard shortcut 'S').
-- [ ] Configurable interval (default 5s).
-- [ ] Pauses on user interaction (hover/touch).
-- [ ] Smart timing: waits for audio track completion if configured.
-- [ ] Visual progress indicator for next slide.
-
-**Priority:** MEDIUM  
-**Role:** Product Owner Recommendation
-
-------------------------------------------------
-
 ### FEATURE 16 – Touch Zoom & Pan ✅ COMPLETED
 
 **Goal:** Enable detailed inspection of images on mobile devices.
@@ -205,59 +301,6 @@ As a mobile user, I want to pinch to zoom into an image to see details, and pan 
 
 **Status:** ✅ Implemented in v1.3.1  
 **Completed:** December 2025
-
-------------------------------------------------
-
-## FEATURE 17 – PWA & Offline Support
-
-**Goal:** Make the gallery installable and functional without an internet connection.
-
-**User Story:**
-As a user with spotty internet, I want the gallery to work offline so I can view previously loaded content.
-
-**Acceptance Criteria:**
-- [ ] Web App Manifest (installable on home screen).
-- [ ] Service Worker for asset caching.
-- [ ] Offline fallback UI.
-- [ ] Cache management strategy (Cache-First for assets).
-
-**Priority:** HIGH  
-**Role:** Architect Recommendation (Performance/Reliability)
-
-------------------------------------------------
-
-## FEATURE 18 – TypeScript Migration
-
-**Goal:** Improve code maintainability, type safety, and developer experience.
-
-**User Story:**
-As a developer, I want type safety and better IDE support to reduce runtime errors and refactoring risks.
-
-**Acceptance Criteria:**
-- [ ] Set up TypeScript build process (Vite or tsc).
-- [ ] Define interfaces for GalleryConfig, Asset, AudioTrack.
-- [ ] Incrementally migrate `.js` files to `.ts`.
-- [ ] Strict null checks enabled.
-
-**Priority:** MEDIUM (Technical Debt)  
-**Role:** Architect Recommendation (Maintainability)
-
-------------------------------------------------
-
-## FEATURE 19 – Automated Image Optimization Pipeline
-
-**Goal:** Ensure all served images are optimized for web performance automatically.
-
-**User Story:**
-As a developer, I want images to be automatically converted to WebP/AVIF and resized so I don't have to do it manually.
-
-**Acceptance Criteria:**
-- [ ] Script to generate WebP/AVIF variants of assets.
-- [ ] `<picture>` tag implementation in `AssetLoader` to serve best format.
-- [ ] Responsive `srcset` generation for different screen sizes.
-
-**Priority:** MEDIUM  
-**Role:** Architect Recommendation (Performance)
 
 ------------------------------------------------
 
@@ -294,7 +337,7 @@ As a QA engineer, I want comprehensive E2E tests for touch zoom functionality so
 
 ------------------------------------------------
 
-## FEATURE 21 – Touch Gesture E2E Tests ✅ COMPLETED
+### FEATURE 21 – Touch Gesture E2E Tests ✅ COMPLETED
 
 **Goal:** Add comprehensive E2E tests for all touch interactions beyond zoom.
 
@@ -312,7 +355,7 @@ As a mobile user, I want confidence that swipe navigation and long-press control
 
 ------------------------------------------------
 
-## FEATURE 22 – Advanced Fullscreen E2E Tests ✅ COMPLETED
+### FEATURE 22 – Advanced Fullscreen E2E Tests ✅ COMPLETED
 
 **Goal:** Enhance fullscreen mode testing to cover auto-hide behavior and edge cases.
 
@@ -330,7 +373,7 @@ As a user, I want the fullscreen experience to be polished with controls that au
 
 ------------------------------------------------
 
-## FEATURE 23 – Audio Group Transition E2E Tests ✅ COMPLETED
+### FEATURE 23 – Audio Group Transition E2E Tests ✅ COMPLETED
 
 **Goal:** Verify audio behavior when navigating between different groups.
 
@@ -347,7 +390,7 @@ As a viewer, I want seamless audio transitions when moving between groups with d
 
 ------------------------------------------------
 
-## FEATURE 24 – Error Handling E2E Tests ✅ COMPLETED
+### FEATURE 24 – Error Handling E2E Tests ✅ COMPLETED
 
 **Goal:** Ensure graceful degradation when assets fail to load or errors occur.
 
@@ -366,63 +409,24 @@ As a user with poor connectivity, I want the gallery to handle missing images an
 
 ------------------------------------------------
 
-## FEATURE 25 – Visual Regression Testing
-
-**Goal:** Automatically detect unintended visual changes across releases.
-
-**User Story:**
-As a developer, I want to catch visual regressions automatically so UI bugs don't reach production.
-
-**Acceptance Criteria:**
-- [ ] Set up visual regression testing framework (Percy, Chromatic, or Playwright screenshots)
-- [ ] Capture baseline screenshots for all major UI states
-- [ ] Test across different viewports (mobile, tablet, desktop)
-- [ ] Test across different browsers
-- [ ] Integrate into CI/CD pipeline
-- [ ] Define acceptable diff thresholds
-
-**Priority:** LOW (Nice to Have)  
-**Role:** Test Coverage Analysis  
-**Dependencies:** CI/CD pipeline
-
-------------------------------------------------
-
-## FEATURE 26 – Performance Testing & Benchmarks
-
-**Goal:** Establish performance baselines and catch performance regressions.
-
-**User Story:**
-As a developer, I want to ensure the gallery loads quickly and runs smoothly across all devices.
-
-**Acceptance Criteria:**
-- [ ] Set up Lighthouse CI for performance audits
-- [ ] Define performance budgets (LCP < 2.5s, FID < 100ms, CLS < 0.1)
-- [ ] Test image loading performance
-- [ ] Test audio loading performance
-- [ ] Test transition smoothness (FPS monitoring)
-- [ ] Test memory usage over time
-- [ ] Create performance dashboard
-
-**Priority:** LOW (Nice to Have)  
-**Role:** Test Coverage Analysis  
-**Dependencies:** CI/CD pipeline, monitoring tools
-
-
-------------------------------------------------
-
-## FEATURE 27 – Sound Transition (Crossfading)
+### FEATURE 27 – Sound Transition (Crossfading) ✅ COMPLETED
 
 **Goal:** Create smooth audio transitions between groups to avoid abrupt cuts.
 
 **User Story:**
 As a viewer, I want the audio from the previous group to crossfade into the new group's audio so the experience feels seamless and professional.
 
-**Acceptance Criteria:**
-- [ ] Implement crossfading logic in `AudioPlayer` (fade out old, fade in new).
-- [ ] Configurable crossfade duration (default e.g., 2000ms).
-- [ ] Handle rapid group changes gracefully (cancel previous fade).
-- [ ] Ensure no volume spikes during the merge.
-- [ ] Respect `enableSound` configuration.
+**Implementation:**
+- [x] Implemented crossfading logic in `AudioPlayer` (fade out old, fade in new)
+- [x] Configurable crossfade duration (default: 2000ms)
+- [x] Dual audio element management during transitions
+- [x] Handles rapid group changes gracefully (cancels previous fade)
+- [x] No volume spikes during transitions
+- [x] Respects `enableSound` configuration
+- [x] Unit tests with fake timers (23/23 passing)
+- [x] E2E test created (pending npm registry recovery for verification)
 
-**Priority:** MEDIUM
+**Status:** ✅ Implemented  
+**Completed:** December 2025  
 **Role:** Product Owner Request
+

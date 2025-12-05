@@ -43,5 +43,7 @@ const galleryConfig = {
         }
       ]
     }
-  ]
+  ],
+  // Audio settings
+  crossfadeDuration: 2000 // ms
 };
