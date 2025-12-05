@@ -27,7 +27,7 @@
         "concurrencyLimit": 6
     },
     "transitions": {
-        "type": "fade",
+        "type": "crossfade",
         "duration": 200
     }
 }
