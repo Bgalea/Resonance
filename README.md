@@ -10,11 +10,12 @@ A modern, minimalist, single-page picture gallery web application with synchroni
 4. [Cross-Browser Compatibility](#4-cross-browser-compatibility)
 5. [Responsive Design](#5-responsive-design)
 6. [Installation & Setup](#6-installation--setup)
-7. [Development Workflow](#7-development-workflow)
-8. [Future Features Backlog](#8-future-features-backlog)
-9. [Limitations](#9-limitations)
-10. [Credits](#10-credits)
-11. [License](#11-license)
+7. [Configuration](#7-configuration)
+8. [Development Workflow](#8-development-workflow)
+9. [Future Features Backlog](#9-future-features-backlog)
+10. [Limitations](#10-limitations)
+11. [Credits](#11-credits)
+12. [License](#12-license)
 
 ---
 
@@ -121,6 +122,32 @@ While client-side protection is never absolute, this project implements "best-ef
     Run the generation script to create `js/generatedConfig.js`:
     ```bash
     node scripts/generateGalleryConfig.mjs
+    ```
+
+---
+
+## 7. Configuration
+
+You can customize the gallery behavior by creating a `settings.json` file in the root directory. You can copy `settings.example.json` to start.
+
+### Available Options
+
+| Section | Option | Type | Default | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| **Top Level** | `enableSound` | `boolean` | `true` | Master switch to enable or disable all audio features. |
+| **ui** | `pageTitle` | `string` | `"Resonance"` | The title that appears in the browser tab. |
+| | `buttonLabels` | `object` | `{ previous: "Previous", next: "Next" }` | Custom text for navigation buttons. |
+| | `messages` | `object` | `{ startPrompt: "...", loading: "..." }` | Custom text for the loading overlay. |
+| **timing** | `transitionDuration` | `number` (ms) | `200` | Duration of the slide transition animation. |
+| | `fullscreenControlsHideDelay` | `number` (ms) | `3000` | Time before controls auto-hide in fullscreen mode. |
+| | `longPressDuration` | `number` (ms) | `800` | Time required to trigger a long-press action. |
+| **touch** | `swipeThreshold` | `number` (px) | `50` | Minimum swipe distance to trigger navigation. |
+| | `tapThreshold` | `number` (px) | `10` | Maximum movement allowed for a tap to register. |
+| **performance** | `maxCacheSize` | `number` | `50` | Maximum number of assets to keep in memory. |
+| | `concurrencyLimit` | `number` | `6` | Maximum number of simultaneous downloads. |
+| **transitions** | `type` | `string` | `"fade"` | Transition effect: `"fade"`, `"crossfade"`, or `"none"`. |
+| | `duration` | `number` (ms) | `200` | Specific duration for the transition effect (overrides timing.transitionDuration). |
+
 ---
 
 ## 10. Troubleshooting
@@ -143,13 +170,13 @@ While client-side protection is never absolute, this project implements "best-ef
 
 ---
 
-## 10. Credits
+## 11. Credits
 
 -   **Developer**: Antigravity (Google DeepMind)
 -   **Concept**: Modern Audio Gallery
 
 ---
 
-## 11. License
+## 12. License
 
 This project is licensed under the MIT License.

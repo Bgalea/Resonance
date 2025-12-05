@@ -23,10 +23,20 @@ try {
     // Conditional audio player initialization
     // --- Audio Control Logic ---
     const soundEnabled = galleryConfig.enableSound !== false; // Default to true
+    console.log(`Main.js: soundEnabled=${soundEnabled}, AudioPlayer defined=${!!window.AudioPlayer}`);
+
     audioPlayer = (soundEnabled && window.AudioPlayer) ? new AudioPlayer() : null;
 
     if (soundEnabled && !audioPlayer) {
         console.warn('Audio enabled in config but AudioPlayer class not found');
+    }
+
+    // Expose for testing
+    if (audioPlayer) {
+        console.log('Main.js: Exposing audioPlayer to window');
+        window.audioPlayer = audioPlayer;
+    } else {
+        console.log('Main.js: audioPlayer is null, not exposing');
     }
 } catch (e) {
     console.error('Main.js: Critical initialization error:', e);
