@@ -173,8 +173,7 @@ test.describe('Audio Controls', () => {
         await loadingOverlay.click();
 
         // Wait for audio element to be created
-        const audio = page.locator('audio');
-        await audio.waitFor({ state: 'attached', timeout: 10000 });
+        const audio = page.locator('audio').first(); // Get active audio (crossfading may have 2)
 
         // Check initial audio
         await expect(audio).toHaveAttribute('src', /audio1\.mp3/);
@@ -231,7 +230,7 @@ test.describe('Audio Controls', () => {
             // instead of looking for a real file
         });
 
-        await page.goto('/');
+        await page.goto('/', { waitUntil: 'domcontentloaded' }); // Don't wait for all assets
         const loadingOverlay = page.locator('#loading-overlay');
         await loadingOverlay.waitFor({ state: 'attached' });
         await expect(loadingOverlay).toHaveAttribute('data-ready', 'true', { timeout: 10000 });

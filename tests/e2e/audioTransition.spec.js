@@ -26,6 +26,9 @@ test.describe('Audio Transition (Crossfading)', () => {
     });
 
     test('should crossfade audio when switching groups', async ({ page }) => {
+        // Wait for audioPlayer to be initialized
+        await page.waitForFunction(() => window.audioPlayer !== undefined && window.audioPlayer !== null, { timeout: 10000 });
+
         // 1. Verify initial audio state (Group 1)
         const initialState = await page.evaluate(() => {
             return {
