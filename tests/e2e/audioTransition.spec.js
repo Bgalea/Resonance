@@ -7,6 +7,10 @@ test.describe('Audio Transition (Crossfading)', () => {
         // Disable animations to prevent Playwright stability timeouts
         await page.addStyleTag({ content: '*, *::before, *::after { animation: none !important; transition: none !important; }' });
 
+        // Add logging
+        page.on('console', msg => console.log(`BROWSER LOG: ${msg.text()}`));
+        page.on('pageerror', err => console.log(`BROWSER ERROR: ${err.message}`));
+
         // Clear localStorage
         await page.evaluate(() => localStorage.clear());
 
@@ -16,6 +20,9 @@ test.describe('Audio Transition (Crossfading)', () => {
         await expect(loadingOverlay).toHaveAttribute('data-ready', 'true', { timeout: 10000 });
         await loadingOverlay.click();
         await expect(loadingOverlay).toHaveClass(/hidden/, { timeout: 2000 });
+
+        // Wait for audio to initialize
+        await page.waitForTimeout(500);
     });
 
     test('should crossfade audio when switching groups', async ({ page }) => {
