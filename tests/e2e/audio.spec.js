@@ -225,17 +225,26 @@ test.describe('Audio Controls', () => {
         });
 
         await page.route('**/assets/**/*', route => {
-            // When test tries to load "assets/i1.jpg"
-            // Playwright intercepts it and provides fake image data
-            // instead of looking for a real file
+            const url = route.request().url();
+            let contentType = 'application/octet-stream';
+            let body = Buffer.from('');
+
+            if (url.endsWith('.jpg') || url.endsWith('.jpeg')) {
+                contentType = 'image/jpeg';
+                body = Buffer.from('/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/2wBDAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwA/wA=', 'base64');
+            } else if (url.endsWith('.mp3') || url.endsWith('.ogg')) {
+                contentType = 'audio/mpeg';
+                body = Buffer.from('SUQzAwAAAAAAJlRQRTEAAAAcAAAAU291bmRKYXkuY29tIFNvdW5kIEVmZmVjdHMA//uQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAADhAC7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7v/////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABMQU1FMy45OC4yAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'base64');
+            }
+
+            route.fulfill({
+                status: 200,
+                contentType: contentType,
+                body: body
+            });
         });
 
-        await page.goto('/', { waitUntil: 'domcontentloaded' }); // Don't wait for all assets
-        const loadingOverlay = page.locator('#loading-overlay');
-        await loadingOverlay.waitFor({ state: 'attached' });
-        await expect(loadingOverlay).toHaveAttribute('data-ready', 'true', { timeout: 10000 });
-        await loadingOverlay.click();
-
+        // beforeEach will handle page.goto and overlay dismissal
         // Set volume
         const volumeSlider = page.locator('#volume-slider');
         await volumeSlider.evaluate(el => {
