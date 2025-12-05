@@ -143,6 +143,29 @@ test.describe('Audio Controls', () => {
             });
         });
 
+        // Mock asset requests to prevent 404 errors
+        await page.route('**/assets/**/*', route => {
+            const url = route.request().url();
+            let contentType = 'application/octet-stream';
+            let body = Buffer.from('');
+
+            if (url.endsWith('.jpg') || url.endsWith('.jpeg')) {
+                contentType = 'image/jpeg';
+                // Minimal valid 1x1 JPEG image
+                body = Buffer.from('/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/2wBDAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwA/wA=', 'base64');
+            } else if (url.endsWith('.mp3') || url.endsWith('.ogg')) {
+                contentType = 'audio/mpeg';
+                // Minimal valid silent MP3
+                body = Buffer.from('SUQzAwAAAAAAJlRQRTEAAAAcAAAAU291bmRKYXkuY29tIFNvdW5kIEVmZmVjdHMA//uQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAADhAC7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7v/////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABMQU1FMy45OC4yAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'base64');
+            }
+
+            route.fulfill({
+                status: 200,
+                contentType: contentType,
+                body: body
+            });
+        });
+
         await page.goto('/');
         const loadingOverlay = page.locator('#loading-overlay');
         await loadingOverlay.waitFor({ state: 'attached' });
